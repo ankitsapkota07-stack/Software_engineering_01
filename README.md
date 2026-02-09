@@ -9,7 +9,7 @@ Throughout this sprint, we apply core software engineering principles such as te
 while addressing real-world sustainability challenges in the fashion industry. <br><br><br>
 
 ---
-### 👥 Group Members <br>
+### 👥 Group Members <br><br>
 - Ankit Sapkota : A00028294 <br> 
 - Purnawashi Mallah : A00032364 <br>
 - Bikesh Yadav : A00031800 <br>
