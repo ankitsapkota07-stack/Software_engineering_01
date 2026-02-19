@@ -1,48 +1,59 @@
-// Import express.js
-const express = require("express");
+// Circular Fashion Frontend JavaScript
 
-// Create express app
-var app = express();
+document.addEventListener("DOMContentLoaded", function () {
 
-// Add static files location
-app.use(express.static("static"));
+    console.log("Circular Fashion site loaded");
 
-// Get the functions in the db.js file to use
-const db = require('./services/db');
+    // 1. Smooth scrolling for navigation links
+    const links = document.querySelectorAll('a[href^="#"]');
 
-// Create a route for root - /
-app.get("/", function(req, res) {
-    res.send("CIRCULAR FASHION: RE-MAKE & MAND");
-});
+    links.forEach(link => {
+        link.addEventListener("click", function (e) {
+            const targetId = this.getAttribute("href");
+            const targetSection = document.querySelector(targetId);
 
-// Create a route for testing the db
-app.get("/db_test", function(req, res) {
-    // Assumes a table called test_table exists in your database
-    sql = 'select * from test_table';
-    db.query(sql).then(results => {
-        console.log(results);
-        res.send(results)
+            if (targetSection) {
+                e.preventDefault();
+                targetSection.scrollIntoView({
+                    behavior: "smooth"
+                });
+            }
+        });
     });
-});
 
-// Create a route for /goodbye
-// Responds to a 'GET' request
-app.get("/goodbye", function(req, res) {
-    res.send("Goodbye world!");
-});
 
-// Create a dynamic route for /hello/<name>, where name is any value provided by user
-// At the end of the URL
-// Responds to a 'GET' request
-app.get("/hello/:name", function(req, res) {
-    // req.params contains any parameters in the request
-    // We can examine it in the console for debugging purposes
-    console.log(req.params);
-    //  Retrieve the 'name' parameter and use it in a dynamically generated page
-    res.send("Hello " + req.params.name);
-});
+    // 2. Sticky header on scroll
+    const header = document.querySelector(".site-header");
 
-// Start server on port 3000
-app.listen(3000,function(){
-    console.log(`Server running at http://127.0.0.1:3000`);
+    if (header) {
+        window.addEventListener("scroll", function () {
+            if (window.scrollY > 50) {
+                header.classList.add("sticky");
+            } else {
+                header.classList.remove("sticky");
+            }
+        });
+    }
+
+
+    // 3. Button interaction
+    const buttons = document.querySelectorAll(".btn.primary");
+
+    buttons.forEach(button => {
+        button.addEventListener("click", function () {
+            alert("Thank you for supporting Circular Fashion!");
+        });
+    });
+
+
+    // 4. Example: Fetch message from server (optional)
+    fetch("/api/message")
+        .then(response => response.json())
+        .then(data => {
+            console.log("Server message:", data.message);
+        })
+        .catch(err => {
+            console.log("Server not available");
+        });
+
 });
