@@ -1,0 +1,74 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Circular Fashion
+    //- Link CSS
+    link(rel="stylesheet", href="styles.css")
+
+  body
+
+    //- Header / Navigation
+    header.site-header
+      .container
+        h1.logo Circular Fashion
+        nav.nav
+          ul
+            li
+              a(href="#about") About
+            li
+              a(href="#services") Services
+            li
+              a(href="#contact") Contact
+
+    //- Hero Section
+    section.hero
+      .container
+        h2 Re-make & Mend
+        p
+          | Give your clothes a second life. Repair, refresh, and reinvent the pieces you love.
+          | Wear longer. Waste less.
+        .hero-buttons
+          a.btn.primary(href="#services") Book a Repair
+
+    //- About Section
+    section#about.about
+      .container
+        h2 Why Circular Fashion?
+        p
+          | Circular fashion focuses on extending the life of garments through repair, reuse,
+          | and upcycling—reducing waste and supporting a more sustainable future.
+
+    //- Services Section
+    section#services.services
+      .container
+        h2 Our Services
+        .service-grid
+          .service-card
+            h3 Repair
+            p Fix tears, replace zippers, and restore worn garments.
+
+          .service-card
+            h3 Upcycle
+            p Transform old clothes into refreshed, personalized pieces.
+
+          .service-card
+            h3 Alterations
+            p Adjust fit and style so you can keep wearing what you love.
+
+    //- Call to Action
+    section.cta
+      .container
+        h2 Keep Fashion in Circulation
+        p Start your circular journey today.
+        a.btn.primary(href="#contact") Get Started
+
+    //- Footer
+    footer#contact.site-footer
+      .container
+        p © 2026 Circular Fashion. All rights reserved.
+        p Email: info@circularfashion.co.uk
+
+    //- Link JavaScript
+    script(src="script.js")
