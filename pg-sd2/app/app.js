@@ -11,7 +11,7 @@ const db = require('./services/db');
 
 // Root route
 app.get("/", function(req, res) {
-    res.sendFile(__dirname + "static/index.html");
+    res.sendFile(__dirname + "static/index.pug");
 });
 
 // API route for frontend
