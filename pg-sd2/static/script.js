@@ -1,59 +1,58 @@
-// Circular Fashion Frontend JavaScript
+document.addEventListener("DOMContentLoaded", () => {
 
-document.addEventListener("DOMContentLoaded", function () {
+console.log("Circular Fashion Loaded");
 
-    console.log("Circular Fashion site loaded");
+/* Sticky Header Shadow */
 
-    // 1. Smooth scrolling for navigation links
-    const links = document.querySelectorAll('a[href^="#"]');
+const header = document.querySelector(".site-header");
 
-    links.forEach(link => {
-        link.addEventListener("click", function (e) {
-            const targetId = this.getAttribute("href");
-            const targetSection = document.querySelector(targetId);
+window.addEventListener("scroll", () => {
 
-            if (targetSection) {
-                e.preventDefault();
-                targetSection.scrollIntoView({
-                    behavior: "smooth"
-                });
-            }
-        });
-    });
+if(window.scrollY > 50){
+header.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
+}
+else{
+header.style.boxShadow = "0 2px 10px rgba(0,0,0,0.05)";
+}
+
+});
 
 
-    // 2. Sticky header on scroll
-    const header = document.querySelector(".site-header");
+/* Scroll Animation */
 
-    if (header) {
-        window.addEventListener("scroll", function () {
-            if (window.scrollY > 50) {
-                header.classList.add("sticky");
-            } else {
-                header.classList.remove("sticky");
-            }
-        });
-    }
+const cards = document.querySelectorAll(".service-card");
+
+function revealCards(){
+
+cards.forEach(card =>{
+
+const cardTop = card.getBoundingClientRect().top;
+
+if(cardTop < window.innerHeight - 50){
+card.style.opacity = "1";
+card.style.transform = "translateY(0)";
+}
+
+});
+
+}
+
+window.addEventListener("scroll", revealCards);
+revealCards();
 
 
-    // 3. Button interaction
-    const buttons = document.querySelectorAll(".btn.primary");
+/* Button interaction */
 
-    buttons.forEach(button => {
-        button.addEventListener("click", function () {
-            alert("Thank you for supporting Circular Fashion!");
-        });
-    });
+const buttons = document.querySelectorAll(".btn.primary");
 
+buttons.forEach(btn =>{
 
-    // 4. Example: Fetch message from server (optional)
-    fetch("/api/message")
-        .then(response => response.json())
-        .then(data => {
-            console.log("Server message:", data.message);
-        })
-        .catch(err => {
-            console.log("Server not available");
-        });
+btn.addEventListener("click", () =>{
+
+console.log("User clicked CTA button");
+
+});
+
+});
 
 });
