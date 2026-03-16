@@ -1,66 +1,85 @@
--- phpMyAdmin SQL Dump
--- version 5.1.1
--- https://www.phpmyadmin.net/
---
--- Host: db
--- Generation Time: Oct 30, 2022 at 09:54 AM
--- Server version: 8.0.24
--- PHP Version: 7.4.20
+DROP TABLE IF EXISTS item_tags;
+DROP TABLE IF EXISTS tags;
+DROP TABLE IF EXISTS items;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS users;
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
+CREATE TABLE users (
+  id INT NOT NULL AUTO_INCREMENT,
+  username VARCHAR(100) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  location VARCHAR(100),
+  bio TEXT,
+  member_since YEAR,
+  rating DECIMAL(2,1) DEFAULT 0.0,
+  PRIMARY KEY (id)
+);
 
+CREATE TABLE categories (
+  id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  PRIMARY KEY (id)
+);
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+CREATE TABLE items (
+  id INT NOT NULL AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  category_id INT NOT NULL,
+  user_id INT NOT NULL,
+  size VARCHAR(50),
+  city VARCHAR(100),
+  availability_status VARCHAR(50) DEFAULT 'Available',
+  date_posted DATE,
+  PRIMARY KEY (id),
+  FOREIGN KEY (category_id) REFERENCES categories(id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
 
---
--- Database: `sd2-db`
---
+CREATE TABLE tags (
+  id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  PRIMARY KEY (id)
+);
 
--- --------------------------------------------------------
+CREATE TABLE item_tags (
+  item_id INT NOT NULL,
+  tag_id INT NOT NULL,
+  PRIMARY KEY (item_id, tag_id),
+  FOREIGN KEY (item_id) REFERENCES items(id),
+  FOREIGN KEY (tag_id) REFERENCES tags(id)
+);
 
---
--- Table structure for table `test_table`
---
+INSERT INTO users (username, email, location, bio, member_since, rating)
+VALUES
+('Ankit', 'ankit@example.com', 'London', 'Interested in circular fashion and community exchange.', 2024, 4.5),
+('Sara', 'sara@example.com', 'Croydon', 'I enjoy upcycling clothes and sharing useful items.', 2024, 4.7),
+('Mina', 'mina@example.com', 'Brixton', 'I repair and alter clothes for reuse.', 2023, 4.3);
 
-CREATE TABLE `test_table` (
-  `id` int NOT NULL,
-  `name` varchar(512) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+INSERT INTO categories (name)
+VALUES
+('Repair'),
+('Upcycle'),
+('Alterations');
 
---
--- Dumping data for table `test_table`
---
+INSERT INTO items (title, description, category_id, user_id, size, city, availability_status, date_posted)
+VALUES
+('Denim Jacket Repair', 'A denim jacket that needs stitching on the sleeve.', 1, 1, 'M', 'London', 'Available', '2025-04-20'),
+('Upcycled Tote Bag', 'Handmade tote bag created from reused fabric.', 2, 2, 'One Size', 'Croydon', 'Available', '2025-04-21'),
+('Black Dress Alteration', 'Dress available for hem and waist alteration exchange.', 3, 3, 'S', 'Brixton', 'Available', '2025-04-22');
 
-INSERT INTO `test_table` (`id`, `name`) VALUES
-(1, 'Lisa'),
-(2, 'Kimia');
+INSERT INTO tags (name)
+VALUES
+('Denim'),
+('Sustainable'),
+('Handmade'),
+('Alteration'),
+('Repair');
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `test_table`
---
-ALTER TABLE `test_table`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `test_table`
---
-ALTER TABLE `test_table`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+INSERT INTO item_tags (item_id, tag_id)
+VALUES
+(1, 1),
+(1, 5),
+(2, 2),
+(2, 3),
+(3, 4);

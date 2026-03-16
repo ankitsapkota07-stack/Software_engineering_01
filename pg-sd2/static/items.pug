@@ -1,0 +1,13 @@
+doctype html
+html(lang="en")
+  head
+    title Items
+    link(rel="stylesheet", href="/styles.css")
+  body
+    h1 Available Items
+    each item in items
+      .card
+        h2= item.title
+        p Category: #{item.category_name}
+        p Owner: #{item.username}
+        a(href=`/items/${item.id}`) View Details

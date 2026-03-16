@@ -1,65 +1,104 @@
-// Circular Fashion Backend Server
-
 const express = require("express");
 const path = require("path");
+const db = require("./services/db");
+
 const app = express();
 
-// Database (if you have it)
-const db = require('./services/db');
-
-// -----------------------------
-// Pug setup
-// -----------------------------
+app.set("views", path.join(__dirname, "../static"));
 app.set("view engine", "pug");
-app.set("views", path.join(__dirname, "../static")); 
-// because this file is inside /app and static is outside
 
-// -----------------------------
-// Static files (CSS, JS)
-// -----------------------------
 app.use(express.static(path.join(__dirname, "../static")));
 
-// -----------------------------
-// Routes
-// -----------------------------
-
-// Root route (render Pug)
-app.get("/", function(req, res) {
-    res.render("index");   // renders static/index.pug
+app.get("/", (req, res) => {
+  res.render("index");
 });
 
-// API route for frontend
-app.get("/api/message", function(req, res) {
-    res.json({
-        message: "Welcome to Circular Fashion – Re-make & Mend"
+module.exports = app;
+
+app.get("/db_test", async (req, res) => {
+  try {
+    const results = await db.query("SELECT * FROM users");
+    res.json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
+});
+
+app.get("/users", async (req, res) => {
+  try {
+    const users = await db.query("SELECT * FROM users");
+    res.render("users", { users });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
+});
+
+app.get("/users/:id", async (req, res) => {
+  try {
+    const userRows = await db.query("SELECT * FROM users WHERE id = ?", [req.params.id]);
+    const itemRows = await db.query("SELECT * FROM items WHERE user_id = ?", [req.params.id]);
+
+    if (userRows.length === 0) {
+      return res.status(404).send("User not found");
+    }
+
+    res.render("user-profile", {
+      user: userRows[0],
+      items: itemRows
     });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
 });
 
-// Database test route
-app.get("/db_test", function(req, res) {
-    const sql = "SELECT * FROM test_table";
-    db.query(sql)
-        .then(results => {
-            res.json(results);
-        })
-        .catch(err => {
-            console.error(err);
-            res.status(500).send("Database error");
-        });
+app.get("/items", async (req, res) => {
+  try {
+    const items = await db.query(`
+      SELECT items.*, users.username, categories.name AS category_name
+      FROM items
+      JOIN users ON items.user_id = users.id
+      JOIN categories ON items.category_id = categories.id
+    `);
+
+    res.render("items", { items });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
 });
 
-// Other example routes
-app.get("/goodbye", function(req, res) {
-    res.send("Goodbye from Circular Fashion!");
+app.get("/items/:id", async (req, res) => {
+  try {
+    const rows = await db.query(`
+      SELECT items.*, users.username, categories.name AS category_name
+      FROM items
+      JOIN users ON items.user_id = users.id
+      JOIN categories ON items.category_id = categories.id
+      WHERE items.id = ?
+    `, [req.params.id]);
+
+    if (rows.length === 0) {
+      return res.status(404).send("Item not found");
+    }
+
+    const tags = await db.query(`
+      SELECT tags.name
+      FROM item_tags
+      JOIN tags ON item_tags.tag_id = tags.id
+      WHERE item_tags.item_id = ?
+    `, [req.params.id]);
+
+    res.render("item-detail", {
+      item: rows[0],
+      tags
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
 });
 
-app.get("/hello/:name", function(req, res) {
-    res.send("Hello " + req.params.name);
-});
-
-// -----------------------------
-// Start server
-// -----------------------------
-app.listen(3000, function(){
-    console.log("Server running at http://127.0.0.1:3000");
-});
+module.exports = app;

@@ -1,0 +1,21 @@
+doctype html
+html(lang="en")
+  head
+    title= user.username
+    link(rel="stylesheet", href="/styles.css")
+  body
+    h1= user.username
+    p Location: #{user.location}
+    p Bio: #{user.bio}
+    p Member Since: #{user.member_since}
+    p Rating: #{user.rating}
+
+    h2 User Listings
+    if items.length
+      each item in items
+        .card
+          h3= item.title
+          p= item.description
+          a(href=`/items/${item.id}`) View Details
+    else
+      p No items listed yet.

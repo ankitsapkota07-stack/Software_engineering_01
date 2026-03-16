@@ -5,11 +5,12 @@ services:
       context: ./
     volumes:
       - .:/src
-    command: supervisor -e  'js,pug,html' index.js
+    command: supervisor -e 'js,pug,html' index.js
     ports:
       - "3000:3000"
     depends_on:
       - db
+
   db:
     image: mysql
     restart: always
@@ -19,6 +20,8 @@ services:
       - "3308:3306"
     volumes:
       - ./db:/var/lib/mysql
+      - ./sd2-db.sql:/docker-entrypoint-initdb.d/sd2-db.sql
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     restart: always
