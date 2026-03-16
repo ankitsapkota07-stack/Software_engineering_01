@@ -23,23 +23,31 @@ html(lang="en")
               a(href="#contact") Contact
 
     //- Hero Section
-section.hero
-  .container
-    h2 Re-make & Mend
-    
-    .hero-buttons
-      a.btn.primary(href="#services") Book a Repair
+    section.hero
+      .container
+        h2 Re-make & Mend
+        p
+          | Give your clothes a second life. Repair, refresh, and reinvent the pieces you love.
+          | Wear longer. Waste less.
+        .hero-buttons
+          a.btn.primary(href="#services") Book a Repair
+
+    //- Link JavaScript (added above Why Circular Fashion)
+    script(src="script.js")
 
     //- About Section
     section#about.about
       .container
         h2 Why Circular Fashion?
         p
-        | Circular fashion aims to reduce waste and protect the environment by keeping clothes in use for as long as possible. Instead of throwing garments away, this approach focuses on repairing, reusing, recycling, and upcycling clothing.
-        |
-        | By extending the life of garments, circular fashion helps reduce textile waste, conserve natural resources, and lower pollution caused by fast fashion. It also encourages people to make more responsible and sustainable fashion choices.
-        |
-        | Circular fashion supports a sustainable future where clothing is valued, reused, and kept in circulation rather than ending up in landfills.
+          | Circular fashion aims to reduce waste and protect the environment by keeping clothes in use for as long as possible.
+          | Instead of throwing garments away, this approach focuses on repairing, reusing, recycling, and upcycling clothing.
+        p
+          | By extending the life of garments, circular fashion helps to reduce textile waste, save natural resources,
+          | and lower pollution caused by fast fashion. It also encourages people to make more responsible and sustainable fashion choices.
+        p
+          | Circular fashion supports a sustainable future, where clothing is valued, reused, and kept in circulation
+          | rather than ending up in landfills.
 
     //- Services Section
     section#services.services
@@ -70,6 +78,3 @@ section.hero
       .container
         p © 2026 Circular Fashion. All rights reserved.
         p Email: info@circularfashion.co.uk
-
-    //- Link JavaScript
-    script(src="script.js")
