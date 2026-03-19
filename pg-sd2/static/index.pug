@@ -2,110 +2,92 @@ doctype html
 html(lang="en")
   head
     meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    meta(name="description" content="Circular Fashion clothing repair, alterations and upcycling services.")
     title Circular Fashion
-    link(rel="stylesheet", href="styles.css")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="/styles.css")
 
   body
-    // Header
+
+    // HEADER
     header.site-header
-      .container
+      .header-flex
         h1.logo Circular Fashion
+
         nav.nav
           ul
-            li
-              a(href="/") Home
-            li
-              a(href="/users") Users
-            li
-              a(href="/items") Items
-            li
-              a(href="/about") About
-            li
-              a(href="/services") Services
-            li
-              a(href="/process") How It Works
-            li
-              a(href="/contact") Contact
+            li: a(href="#home" class="active") Home
+            li: a(href="#about") About
+            li: a(href="#services") Services
+            li: a(href="#process") How It Works
+            li: a(href="#contact") Contact
 
-    // Hero Section
-    section.hero
-      .hero-content
+        a.login-btn(href="/login") Login
+
+    // HERO
+    section#home.hero
+      .section-content
         h2 Re-make & Mend
         p Give your clothes a second life. Repair, refresh and reinvent the pieces you love.
         .hero-buttons
-          a.btn.primary(href="/services") Book a Repair
-          a.btn.secondary(href="/about") Learn More
-
-    // About
+          a.btn.primary(href="#") Book a Repair
+          a.btn.secondary(href="#") Learn More
+          
+    // ABOUT
     section#about.about
-      .container
+      .section-content
         h2 Why Circular Fashion?
-        p Circular fashion reduces waste by keeping clothing in use for as long as possible.
-        p Instead of throwing garments away, we repair, reuse and upcycle them.
-        p This helps protect the planet while letting you keep the clothes you love.
+        p.about-text
+          | Circular fashion reduces waste by keeping clothing in use for as long as possible.
+          | Instead of throwing garments away, we repair, reuse and upcycle them.
 
-    // Services
+    // SERVICES
     section#services.services
-      .container
+      .section-content
         h2 Our Services
+
         .service-grid
           .service-card
-            .icon 🧵
             h3 Repair
-            p Fix tears, replace zippers and restore worn garments.
-          .service-card
-            .icon ♻️
-            h3 Upcycle
-            p Transform old clothes into refreshed personalized pieces.
-          .service-card
-            .icon ✂️
-            h3 Alterations
-            p Adjust fit and style so you can keep wearing what you love.
+            p Fix tears, replace zips, and restore garments.
 
-    // Process
+          .service-card
+            h3 Upcycle
+            p Transform old clothes into refreshed pieces.
+
+          .service-card
+            h3 Alterations
+            p Adjust fit and style perfectly.
+
+    // PROCESS
     section#process.process
-      .container
+      .section-content
         h2 How It Works
+
         .steps
           .step
             h3 1. Book
-            p Tell us what clothing needs repairing.
+            p Choose your service
+
           .step
             h3 2. Send or Visit
-            p Bring your clothing to our studio or mail it.
-          .step
-            h3 3. Wear Again
-            p Enjoy your refreshed garments and reduce waste.
+            p Bring or mail your clothing
 
-    // Testimonials
-    section.testimonials
-      .container
-        h2 What Our Customers Say
-        .testimonial-grid
-          .testimonial
-            p "Amazing repair service. My jacket looks brand new!"
-            span – Sarah
-          .testimonial
-            p "Love the upcycling work. Sustainable and stylish."
-            span – James
-          .testimonial
-            p "Highly recommend for alterations and repairs."
-            span – Emma
+          .step
+            h3 3. Enjoy
+            p Receive your refreshed item
 
     // CTA
     section.cta
-      .container
+      .section-content
         h2 Keep Fashion in Circulation
-        p Start your circular fashion journey today.
-        a.btn.primary(href="/contact") Get Started
+        p Start your journey today
+        a.btn.primary(href="#") Get Started
 
-    // Footer
+    // FOOTER
     footer#contact.site-footer
-      .container
+      .section-content
         p © 2026 Circular Fashion
         p Email: info@circularfashion.co.uk
         p Repair • Upcycle • Alterations
 
-    script(src="script.js")
+    script(src="/script.js")

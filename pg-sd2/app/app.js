@@ -1,3 +1,4 @@
+const session = require("express-session");
 const express = require("express");
 const path = require("path");
 const db = require("./services/db");
@@ -6,13 +7,97 @@ const app = express();
 
 app.set("views", path.join(__dirname, "../static"));
 app.set("view engine", "pug");
-
+app.use(express.urlencoded({ extended: true }));
+// Show pages
+app.get("/login", (req, res) => res.render("login"));
+app.get("/register", (req, res) => res.render("register"));
+app.get("/forgot-password", (req, res) => res.render("forgot-password"));
 app.use(express.static(path.join(__dirname, "../static")));
+app.use(
+  session({
+    secret: "secret-key",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+app.use((req, res, next) => {
+  res.locals.user = req.session.user;
+  next();
+});
 
 app.get("/", (req, res) => {
   res.render("index");
 });
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/");
+});
+app.post("/register", async (req, res) => {
+  const { username, email, password } = req.body;
 
+  try {
+    await db.query(
+      "INSERT INTO users (username, email, password, location, bio, member_since, rating) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [username, email, password, "Unknown", "New user", 2026, 0]
+    );
+
+    res.redirect("/login");
+  } catch (err) {
+    res.send("Registration error");
+  }
+});
+
+
+// STEP 7 → LOGIN
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const rows = await db.query(
+      "SELECT * FROM users WHERE username = ?",
+      [username]
+    );
+
+    if (rows.length === 0) {
+      return res.send("User not found");
+    }
+
+    const user = rows[0];
+
+    // ✅ Check password
+    if (user.password !== password) {
+      return res.send("❌ Incorrect password, re-enter");
+    }
+
+    // ✅ Save session
+    req.session.user = user;
+
+    // ✅ Redirect
+    res.redirect("/");
+  } catch (err) {
+    res.send("Login error");
+  }
+});
+
+// STEP 8 → FORGOT PASSWORD
+app.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const rows = await db.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
+
+    if (rows.length > 0) {
+      res.send("Password reset link (not implemented)");
+    } else {
+      res.send("Email not found");
+    }
+  } catch (err) {
+    res.send("Error");
+  }
+});
 module.exports = app;
 
 app.get("/db_test", async (req, res) => {

@@ -1,58 +1,22 @@
-document.addEventListener("DOMContentLoaded", () => {
-
-console.log("Circular Fashion Loaded");
-
-/* Sticky Header Shadow */
-
-const header = document.querySelector(".site-header");
+// Highlight active nav link on scroll
+const sections = document.querySelectorAll("section");
+const navLinks = document.querySelectorAll(".nav a");
 
 window.addEventListener("scroll", () => {
+  let current = "";
+  
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop - 100;
+    const sectionHeight = section.offsetHeight;
+    if(pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight){
+      current = section.getAttribute("id");
+    }
+  });
 
-if(window.scrollY > 50){
-header.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
-}
-else{
-header.style.boxShadow = "0 2px 10px rgba(0,0,0,0.05)";
-}
-
-});
-
-
-/* Scroll Animation */
-
-const cards = document.querySelectorAll(".service-card");
-
-function revealCards(){
-
-cards.forEach(card =>{
-
-const cardTop = card.getBoundingClientRect().top;
-
-if(cardTop < window.innerHeight - 50){
-card.style.opacity = "1";
-card.style.transform = "translateY(0)";
-}
-
-});
-
-}
-
-window.addEventListener("scroll", revealCards);
-revealCards();
-
-
-/* Button interaction */
-
-const buttons = document.querySelectorAll(".btn.primary");
-
-buttons.forEach(btn =>{
-
-btn.addEventListener("click", () =>{
-
-console.log("User clicked CTA button");
-
-});
-
-});
-
+  navLinks.forEach(link => {
+    link.classList.remove("active");
+    if(link.getAttribute("href") === `#${current}`){
+      link.classList.add("active");
+    }
+  });
 });
