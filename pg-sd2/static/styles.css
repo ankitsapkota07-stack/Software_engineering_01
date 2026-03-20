@@ -182,3 +182,89 @@ section p {
     font-size: 2rem;
   }
 }
+
+/* --- Login Page --- */
+form {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  width: 100%;
+  max-width: 400px;
+  margin: 40px auto;
+  text-align: left;
+}
+
+/* Title */
+h2 {
+  text-align: center;
+  margin-top: 40px;
+  color: #2f6f4e;
+}
+
+/* Labels */
+form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+/* Inputs */
+form input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+form input:focus {
+  outline: none;
+  border-color: #2e7d32;
+  box-shadow: 0 0 0 2px rgba(46,125,50,0.15);
+}
+
+/* Button */
+form button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 50px;
+  background: #2e7d32;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+form button:hover {
+  background: #256628;
+  transform: translateY(-2px);
+}
+
+/* Links */
+form a {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: #2e7d32;
+  text-decoration: none;
+  margin-bottom: 10px;
+}
+
+form a:hover {
+  text-decoration: underline;
+}
+
+/* Bottom links (outside form) */
+body > a {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  color: #2e7d32;
+  text-decoration: none;
+}
+
+body > a:hover {
+  text-decoration: underline;
+}
