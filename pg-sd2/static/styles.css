@@ -470,3 +470,23 @@ h1 {
 .form-footer a:hover {
   text-decoration: underline;
 }
+
+/* --- Forgot Password Page --- */
+
+/* Optional: slightly narrower form */
+form {
+  max-width: 380px;
+}
+
+/* Improve heading spacing */
+h2 {
+  margin-bottom: 10px;
+}
+
+/* Optional helper text (if you add later) */
+.form-helper {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 15px;
+  text-align: center;
+}
