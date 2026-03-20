@@ -3,37 +3,34 @@ html
   head
     title Register
     link(rel="stylesheet", href="/styles.css")
+
   body
     h2 Create Account
 
     form(method="POST", action="/register")
+      
+      .form-group
+        label Full Name
+        input(type="text", name="fullname", required)
 
-      label Full Name:
-      input(type="text", name="fullname", required)
+      .form-group
+        label Email
+        input(type="email", name="email", required)
 
-      br
+      .form-group
+        label Phone
+        input(type="text", name="phone", required)
 
-      label Email:
-      input(type="email", name="email", required)
+      .form-group
+        label Username
+        input(type="text", name="username", required)
 
-      br
-
-      label Phone:
-      input(type="text", name="phone", required)
-
-      br
-
-      label Username:
-      input(type="text", name="username", required)
-
-      br
-
-      label Password:
-      input(type="password", name="password", required)
-
-      br
+      .form-group
+        label Password
+        input(type="password", name="password", required)
 
       button(type="submit") Register
 
-    br
-    a(href="/login") Back to Login
+      p.form-footer
+        | Already have an account?
+        a(href="/login")  Login

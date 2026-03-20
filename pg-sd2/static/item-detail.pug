@@ -3,16 +3,35 @@ html(lang="en")
   head
     title= item.title
     link(rel="stylesheet", href="/styles.css")
-  body
-    h1= item.title
-    p Category: #{item.category_name}
-    p Owner: #{item.username}
-    p Size: #{item.size}
-    p City: #{item.city}
-    p Description: #{item.description}
-    p Status: #{item.availability_status}
 
-    h3 Tags
-    ul
-      each tag in tags
-        li= tag.name
+  body
+    .item-container
+      .item-card
+        h1= item.title
+
+        .item-meta
+          span.badge #{item.category_name}
+          span.status #{item.availability_status}
+
+        .item-info
+          p 
+            strong Owner:
+            |  #{item.username}
+          p 
+            strong Size:
+            |  #{item.size}
+          p 
+            strong City:
+            |  #{item.city}
+
+        .item-description
+          h3 Description
+          p= item.description
+
+        .item-tags
+          h3 Tags
+          ul
+            each tag in tags
+              li.tag= tag.name
+
+        a.back-link(href="/items") ← Back to Items

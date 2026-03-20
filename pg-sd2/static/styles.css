@@ -268,3 +268,205 @@ body > a {
 body > a:hover {
   text-decoration: underline;
 }
+
+/* --- Items Page Title --- */
+h1 {
+  text-align: center;
+  margin: 40px 0 20px;
+  color: #2f6f4e;
+}
+
+/* --- Grid Layout --- */
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  width: 90%;
+  max-width: 1100px;
+  margin: 30px auto;
+}
+
+/* --- Card --- */
+.card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Hover Effect */
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* Card Title */
+.card h2 {
+  color: #2e7d32;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+}
+
+/* Text */
+.card p {
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+/* Label styling */
+.card strong {
+  color: #2e3d2f;
+}
+
+/* Button */
+.btn-view {
+  margin-top: 15px;
+  padding: 10px 16px;
+  background: #2e7d32;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  transition: background 0.3s, transform 0.2s;
+}
+
+/* Button Hover */
+.btn-view:hover {
+  background: #256628;
+  transform: translateY(-2px);
+}
+
+/* --- Item Details Page --- */
+.item-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.item-card {
+  background: #ffffff;
+  padding: 35px;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  max-width: 700px;
+  width: 100%;
+}
+
+/* Title */
+.item-card h1 {
+  color: #2f6f4e;
+  margin-bottom: 15px;
+}
+
+/* Meta badges */
+.item-meta {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.badge {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
+.status {
+  background: #f1f8e9;
+  color: #558b2f;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
+/* Info */
+.item-info p {
+  margin-bottom: 8px;
+  color: #444;
+}
+
+/* Description */
+.item-description {
+  margin-top: 20px;
+}
+
+.item-description h3 {
+  margin-bottom: 8px;
+  color: #2e7d32;
+}
+
+/* Tags */
+.item-tags {
+  margin-top: 20px;
+}
+
+.item-tags ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0;
+}
+
+.tag {
+  background: #2e7d32;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+/* Back link */
+.back-link {
+  display: inline-block;
+  margin-top: 25px;
+  text-decoration: none;
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* Back link */
+.back-link {
+  display: inline-block;
+  margin-top: 25px;
+  text-decoration: none;
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* --- Register Page Improvements --- */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-footer {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+.form-footer a {
+  color: #2e7d32;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.form-footer a:hover {
+  text-decoration: underline;
+}
