@@ -58,14 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // 4. Button interaction
-    const buttons = document.querySelectorAll(".btn.primary");
-
-    buttons.forEach(button => {
-        button.addEventListener("click", function () {
-            alert("Thank you for supporting Circular Fashion!");
-        });
-    });
+    // Button interaction - if we add in future
 
     // 5. Example: Fetch message from server (optional)
     fetch("/api/message")
