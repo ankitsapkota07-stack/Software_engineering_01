@@ -2,16 +2,16 @@ doctype html
 html(lang="en")
   head
     meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(name="description" content="Circular Fashion clothing repair, alterations and upcycling services.")
     title Circular Fashion
-    meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    link(rel="stylesheet", href="/styles.css")
+    link(rel="stylesheet", href="styles.css")
 
   body
     // Header
     header.site-header
       .container
         h1.logo Circular Fashion
-
         nav.nav
           ul
             li: a(href="#home" class="active") Home
@@ -19,8 +19,7 @@ html(lang="en")
             li: a(href="#services") Services
             li: a(href="#process") How It Works
             li: a(href="#contact") Contact
-
-        a.login-btn(href="/login") Login
+            li: a.login-btn(href="/login") Login
 
     section#home.hero
       .section-content
