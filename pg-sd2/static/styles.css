@@ -16,7 +16,7 @@ body {
 /* --- Header --- */
 .site-header {
   background: #fff;
-  padding: 1rem 5%;
+  padding: 1rem 40px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   position: sticky;
   top: 0;
@@ -37,7 +37,8 @@ body {
 
 .logo {
   color: #2f6f4e;
-  font-size: 1.6rem;
+  font-size: 2.2rem;
+  font-weight: 700;
 }
 
 
