@@ -35,49 +35,68 @@ html(lang="en")
     // About
     section#about.about
     .container.about-container
+
       .about-text
-        h2 Why Circular Fashion?
+        h2 Why Choose Circular Fashion?
+
+        p.lead
+          | Circular fashion is a smarter, more sustainable way to keep clothing in use for longer. Instead of discarding garments, we repair, reuse, and upcycle them—giving every piece a second life while reducing environmental impact.
 
         p
-          | Circular fashion is a sustainable approach that keeps clothing in use for as long as possible. Instead of discarding garments, we focus on repairing, reusing, and upcycling them to extend their life and reduce waste.
+          | This approach not only helps protect the planet but also allows you to continue wearing the clothes you love, with improved longevity and style.
 
-        p
-          | This approach helps protect the environment while allowing you to keep and enjoy the clothes you love.
+        h3 Benefits of Circular Fashion
 
-        p
-          | Choosing circular fashion comes with many benefits:
+        .benefits-grid
+          .benefit-card
+            span 🌍
+            p Reduces textile waste and keeps clothing out of landfills
 
-        ul.about-list
-          li 🌍 Reduces textile waste and keeps clothes out of landfills
-          li ♻️ Promotes reuse, repair, and recycling of garments
-          li 💷 Saves money by extending the life of your wardrobe
-          li ✂️ Encourages creativity through upcycling and redesign
-          li 🌱 Reduces carbon emissions and environmental impact
-          li 🤝 Supports ethical and sustainable fashion practices
+          .benefit-card
+            span ♻️
+            p Encourages reuse, repair, and recycling of garments
 
-        p
-          | By embracing circular fashion, you are contributing to a more responsible and sustainable future for the planet while still expressing your personal style.
+          .benefit-card
+            span 💷
+            p Saves money by extending the life of your wardrobe
 
-      .about-image
-        img(src="https://images.unsplash.com/photo-1521335629791-ce4aec67dd47?auto=format&fit=crop&w=800&q=60", alt="Sustainable fashion")
+          .benefit-card
+            span ✂️
+            p Promotes creativity through upcycling and redesign
 
+          .benefit-card
+            span 🌱
+            p Lowers carbon emissions and environmental impact
+
+          .benefit-card
+            span 🤝
+            p Supports ethical and responsible fashion practices
+
+        p.closing
+          | By choosing circular fashion, you’re helping build a more sustainable future—while still expressing your personal style and individuality.
+
+    // Services
     section#services.services
       .section-content
         h2 Our Services
 
         .service-grid
           .service-card
+            .icon 🧵
             h3 Repair
             p Fix tears, replace zips, and restore garments.
 
           .service-card
+            .icon ♻️
             h3 Upcycle
             p Transform old clothes into refreshed pieces.
 
           .service-card
+            .icon ✂️
             h3 Alterations
             p Adjust fit and style perfectly.
 
+    // Process
     section#process.process
       .section-content
         h2 How It Works
@@ -89,21 +108,25 @@ html(lang="en")
 
           .step
             h3 2. Send or Visit
-            p Bring or mail your clothing
+            p Bring your clothing to our studio or mail it.
+
 
           .step
             h3 3. Enjoy
-            p Receive your refreshed item
+            p Enjoy your refreshed garments and reduce waste.
 
+    // CTA
     section.cta
       .section-content
         h2 Keep Fashion in Circulation
         p Start your journey today
         a.btn.primary(href="/login") Get Started
 
+    // Footer
     footer#contact.site-footer
       .section-content
         p © 2026 Circular Fashion
         p Email: info@circularfashion.co.uk
+        p Repair • Upcycle • Alterations
 
     script(src="/script.js")
