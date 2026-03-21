@@ -32,11 +32,7 @@ body {
 .container {
   display: flex;
   justify-content: space-between;
-  align-items:center;
-
-  max-width: 1400px;    
-  margin: 0 auto;            
-  padding: 0 20px;            
+  align-items:center;         
 
   width: 100%;
   
@@ -52,6 +48,10 @@ body {
 /* --- Navigation --- */
 .nav {
   margin-left: auto;
+}
+
+.login-btn {
+  margin-left: auto; /* pushes login to the far right */
 }
 
 .nav ul {
