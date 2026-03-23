@@ -30,10 +30,10 @@ html(lang="en")
         h2 Re-make & Mend
 
         if user 
-          p Welcome back, #{user.username}! Ready to Swap and ment?
+          p Welcome back, #{user.username}! Ready to Swap and mend?
           .hero-buttons 
             a.btn.primary(href="/items") Browse Items 
-            a.btn.secondary(href=⁠`/users/${user.id}`⁠) My Profile
+            a.btn.secondary(href=`/users/${user.id}`) My Profile
 
         else 
           p
