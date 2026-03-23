@@ -20,6 +20,10 @@ html(lang="en")
             li: a(href="#process") How It Works
             li: a(href="#contact") Contact
             li: a.login-btn(href="/login") Login
+        if user
+          aa.login-btnhref="/logout") Logout
+        else
+          a.login-btn(href="/login") Login
 
     // Hero
     section#home.hero
