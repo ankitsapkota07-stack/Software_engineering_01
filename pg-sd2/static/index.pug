@@ -19,11 +19,10 @@ html(lang="en")
             li: a(href="#services") Services
             li: a(href="#process") How It Works
             li: a(href="#contact") Contact
-            li: a.login-btn(href="/login") Login
-        if user
-          aa.login-btnhref="/logout") Logout
-        else
-          a.login-btn(href="/login") Login
+            if user
+              li: a.login-btn(href="/logout") Logout
+            else
+              li: a.login-btn(href="/login") Login
 
     // Hero
     section#home.hero
