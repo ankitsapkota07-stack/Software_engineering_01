@@ -28,12 +28,20 @@ html(lang="en")
     section#home.hero
       .section-content
         h2 Re-make & Mend
-        p
-          | Give your clothes a second life. Repair, refresh, and reinvent the pieces you love.
-          | Wear longer. Waste less.
-        .hero-buttons
-          a.btn.primary(href="/login") Book a Repair
-          a.btn.secondary(href="#about") Learn More
+
+        if user 
+          p Welcome back, #{user.username}! Ready to Swap and ment?
+          .hero-buttons 
+            a.btn.primary(href="/items") Browse Items 
+            a.btn.secondary(href=⁠ /users/${user.id} ⁠) My Profile
+
+        else 
+          p
+            | Give your clothes a second life. Repair, refresh, and reinvent the pieces you love.
+            | Wear longer. Waste less.
+          .hero-buttons
+            a.btn.primary(href="/login") Book a Repair
+            a.btn.secondary(href="#about") Learn More
 
     // About
     section#about.about
