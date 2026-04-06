@@ -6,6 +6,11 @@ html
   body
     h2 Login
 
+    // Back button
+    a(href="/") ← Back to Home
+    br
+    br
+
     form(method="POST", action="/login")
       label Username:
       input(type="text", name="username", required)
@@ -19,11 +24,9 @@ html
       a(href="#") Forgot Password?
       br 
 
-
       button(type="submit") Login
 
     br
     a(href="/forgot-password") Forgot Password?
     br
     a(href="/register") Create Account
-    
