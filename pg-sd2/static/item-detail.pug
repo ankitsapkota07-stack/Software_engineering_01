@@ -5,6 +5,8 @@ html(lang="en")
     link(rel="stylesheet", href="/styles.css")
 
   body
+    // back button
+    a.back-link(href="/items") ← Back
     .item-container
       .item-card
         h1= item.title
@@ -34,4 +36,4 @@ html(lang="en")
             each tag in tags
               li.tag= tag.name
 
-        a.back-link(href="/items") ← Back to Items
+        
