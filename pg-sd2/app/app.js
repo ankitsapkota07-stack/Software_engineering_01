@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const session = require("express-session");
 const express = require("express");
 const path = require("path");
@@ -24,6 +25,12 @@ app.use((req, res, next) => {
   res.locals.user = req.session.user;
   next();
 });
+function requireLogin(req, res, next) {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
+  next();
+}
 
 app.get("/", (req, res) => {
   res.render("index");
@@ -36,17 +43,19 @@ app.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     await db.query(
       "INSERT INTO users (username, email, password, location, bio, member_since, rating) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [username, email, password, "Unknown", "New user", 2026, 0]
+      [username, email, hashedPassword, "Unknown", "New user", 2026, 0]
     );
 
     res.redirect("/login");
   } catch (err) {
+    console.error(err);
     res.send("Registration error");
   }
 });
-
 
 // STEP 7 → LOGIN
 app.post("/login", async (req, res) => {
@@ -63,18 +72,21 @@ app.post("/login", async (req, res) => {
     }
 
     const user = rows[0];
+    const match = await bcrypt.compare(password, user.password);
 
-    // ✅ Check password
-    if (user.password !== password) {
-      return res.send("❌ Incorrect password, re-enter");
+    if (!match) {
+      return res.send("Incorrect password");
     }
 
-    // ✅ Save session
-    req.session.user = user;
+    req.session.user = {
+      id: user.id,
+      username: user.username,
+      email: user.email
+    };
 
-    // ✅ Redirect
     res.redirect("/");
   } catch (err) {
+    console.error(err);
     res.send("Login error");
   }
 });
@@ -185,5 +197,20 @@ app.get("/items/:id", async (req, res) => {
     res.status(500).send("Database error");
   }
 });
+// Ratings Features
+app.post("/users/:id/rate", requireLogin, async (req, res) => {
+  const { rating } = req.body;
+  const userId = req.params.id;
 
+  try {
+    await db.query(
+      "UPDATE users SET rating = ? WHERE id = ?",
+      [rating, userId]
+    );
+    res.redirect(`/users/${userId}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Rating error");
+  }
+});
 module.exports = app;
