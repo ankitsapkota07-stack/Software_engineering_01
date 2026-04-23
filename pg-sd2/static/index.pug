@@ -15,13 +15,15 @@ html(lang="en")
         nav.nav
           ul
             li: a(href="#home" class="active") Home
-            li: a(href="#about") About
-            li: a(href="#services") Services
-            li: a(href="#process") How It Works
-            li: a(href="#contact") Contact
             if user
+              li: a(href="#contact") Contact
+              li: a.add-item-btn(href="/items/new") + Add Item
               li: a.login-btn(href="/logout") Logout
             else
+              li: a(href="#about") About
+              li: a(href="#services") Services
+              li: a(href="#process") How It Works
+              li: a(href="#contact") Contact
               li: a.login-btn(href="/login") Login
 
     // Hero
@@ -29,13 +31,14 @@ html(lang="en")
       .section-content
         h2 Re-make & Mend
 
-        if user 
+        if user
           p Welcome back, #{user.username}! Ready to Swap and mend?
-          .hero-buttons 
-            a.btn.primary(href="/items") Browse Items 
+          .hero-buttons
+            a.btn.primary(href="/items") Browse Items
+            a.btn.add-item(href="/items/new") + Add Item
             a.btn.secondary(href=`/users/${user.id}`) My Profile
 
-        else 
+        else
           p
             | Give your clothes a second life. Repair, refresh, and reinvent the pieces you love.
             | Wear longer. Waste less.
@@ -43,100 +46,103 @@ html(lang="en")
             a.btn.primary(href="/login") Book a Repair
             a.btn.secondary(href="#about") Learn More
 
-    // About
-    section#about.about
-    .container.about-container
+    if user
+      // Logged-in users skip the marketing sections — nothing to show here
+      // (Add member-only content below this line in future)
 
-      .about-text
-        h2 Why Choose Circular Fashion?
+    else
+      // About
+      section#about.about
+        .container.about-container
+          .about-text
+            h2 Why Choose Circular Fashion?
 
-        p.lead
-          | Circular fashion is a smarter, more sustainable way to keep clothing in use for longer. Instead of discarding garments, we repair, reuse, and upcycle them—giving every piece a second life while reducing environmental impact.
+            p.lead
+              | Circular fashion is a smarter, more sustainable way to keep clothing in use for longer. Instead of discarding garments, we repair, reuse, and upcycle them—giving every piece a second life while reducing environmental impact.
 
-        p
-          | This approach not only helps protect the planet but also allows you to continue wearing the clothes you love, with improved longevity and style.
+            p
+              | This approach not only helps protect the planet but also allows you to continue wearing the clothes you love, with improved longevity and style.
 
-        h3 Benefits of Circular Fashion
+            h3 Benefits of Circular Fashion
 
-        .benefits-grid
-          .benefit-card
-            span 🌍
-            p Reduces textile waste and keeps clothing out of landfills
+            .benefits-grid
+              .benefit-card
+                span 🌍
+                p Reduces textile waste and keeps clothing out of landfills
 
-          .benefit-card
-            span ♻️
-            p Encourages reuse, repair, and recycling of garments
+              .benefit-card
+                span ♻️
+                p Encourages reuse, repair, and recycling of garments
 
-          .benefit-card
-            span 💷
-            p Saves money by extending the life of your wardrobe
+              .benefit-card
+                span 💷
+                p Saves money by extending the life of your wardrobe
 
-          .benefit-card
-            span ✂️
-            p Promotes creativity through upcycling and redesign
+              .benefit-card
+                span ✂️
+                p Promotes creativity through upcycling and redesign
 
-          .benefit-card
-            span 🌱
-            p Lowers carbon emissions and environmental impact
+              .benefit-card
+                span 🌱
+                p Lowers carbon emissions and environmental impact
 
-          .benefit-card
-            span 🤝
-            p Supports ethical and responsible fashion practices
+              .benefit-card
+                span 🤝
+                p Supports ethical and responsible fashion practices
 
-        p.closing
-          | By choosing circular fashion, you’re helping build a more sustainable future—while still expressing your personal style and individuality.
+            p.closing
+              | By choosing circular fashion, you're helping build a more sustainable future—while still expressing your personal style and individuality.
 
-    // Services
-    section#services.services
-      .section-content
-        h2 Our Services
+      // Services
+      section#services.services
+        .section-content
+          h2 Our Services
 
-        .service-grid
-          .service-card
-            .icon 🧵
-            h3 Repair
-            p Fix tears, replace zips, and restore garments.
+          .service-grid
+            .service-card
+              .icon 🧵
+              h3 Repair
+              p Fix tears, replace zips, and restore garments.
 
-          .service-card
-            .icon ♻️
-            h3 Upcycle
-            p Transform old clothes into refreshed pieces.
+            .service-card
+              .icon ♻️
+              h3 Upcycle
+              p Transform old clothes into refreshed pieces.
 
-          .service-card
-            .icon ✂️
-            h3 Alterations
-            p Adjust fit and style perfectly.
+            .service-card
+              .icon ✂️
+              h3 Alterations
+              p Adjust fit and style perfectly.
 
-    // Process
-    section#process.process
-      .section-content
-        h2 How It Works
+      // Process
+      section#process.process
+        .section-content
+          h2 How It Works
 
-        .steps
-          .step
-            .icon 📅
-            h3 1. Book
-            p Choose your service (book request)
+          .steps
+            .step
+              .icon 📅
+              h3 1. Book
+              p Choose your service (book request)
 
-          .step
-            .icon 📦
-            h3 2. Send or Visit
-            p Bring your clothing to our studio or mail it.
+            .step
+              .icon 📦
+              h3 2. Send or Visit
+              p Bring your clothing to our studio or mail it.
 
+            .step
+              .icon ✨
+              h3 3. Enjoy
+              p Enjoy your refreshed garments and reduce waste.
 
-          .step
-            .icon ✨
-            h3 3. Enjoy
-            p Enjoy your refreshed garments and reduce waste.
+      // CTA
+      section.cta
+        .section-content
+          h2 Keep Fashion in Circulation
+          p Start your journey today
+          a.btn.primary(href="/login") Get Started
 
-    // CTA
-    section.cta
-      .section-content
-        h2 Keep Fashion in Circulation
-        p Start your journey today
-        a.btn.primary(href="/login") Get Started
-
-    // Footer
+    // Footer — always visible
     footer#contact.site-footer
       .section-content
         p © 2026 Circular Fashion
