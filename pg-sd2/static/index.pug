@@ -5,142 +5,181 @@ html(lang="en")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     meta(name="description" content="Circular Fashion clothing repair, alterations and upcycling services.")
     title Circular Fashion
-    link(rel="stylesheet", href="styles.css")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap")
+    link(rel="stylesheet" href="styles.css")
 
   body
-    // Header
-    header.site-flex
+    //- ── Header ──────────────────────────────────────────────────────────
+    header.site-header
       .container
-        h1.logo Circular Fashion
+        a.logo(href="#home") Circular Fashion
+
         nav.nav
           ul
             li: a(href="#home" class="active") Home
-            li: a(href="#about") About
-            li: a(href="#services") Services
-            li: a(href="#process") How It Works
-            li: a(href="#contact") Contact
+
             if user
+              li: a(href="#about") About
+              li: a(href="#services") Services
+              li: a(href="#process") How It Works
+              li: a(href="#contact") Contact
+              li
+                a.add-item-btn(href="/items/new")
+                  span.plus-icon +
+                  | &nbsp;Add Item
               li: a.login-btn(href="/logout") Logout
             else
               li: a.login-btn(href="/login") Login
 
-    // Hero
+    //- ── Hero ────────────────────────────────────────────────────────────
     section#home.hero
+      .hero-backdrop
       .section-content
-        h2 Re-make & Mend
 
-        if user 
-          p Welcome back, #{user.username}! Ready to Swap and mend?
-          .hero-buttons 
-            a.btn.primary(href="/items") Browse Items 
+        if user
+          //- ── Logged-in hero ──
+          .hero-badge Welcome back
+          h2 Ready to Mend &amp; Swap, #{user.username}?
+          p.hero-sub Browse the community wardrobe or list something new for repair and upcycling.
+          .hero-buttons
+            a.btn.primary(href="/items") Browse Items
+            a.btn.add-item(href="/items/new")
+              span +
+              | &nbsp;Add Item
             a.btn.secondary(href=`/users/${user.id}`) My Profile
 
-        else 
-          p
-            | Give your clothes a second life. Repair, refresh, and reinvent the pieces you love.
-            | Wear longer. Waste less.
+        else
+          //- ── Guest hero ──
+          .hero-badge Sustainable Fashion
+          h2 Re-make &amp; Mend
+          p.hero-sub
+            | Give your clothes a second life. Repair, refresh, and reinvent
+            | the pieces you love. Wear longer. Waste less.
           .hero-buttons
             a.btn.primary(href="/login") Book a Repair
-            a.btn.secondary(href="#about") Learn More
+            a.btn.secondary(href="/login") Get Started
 
-    // About
-    section#about.about
-    .container.about-container
+          //- ── Guest Gate ──
+          .guest-gate
+            .gate-cards
+              .gate-card
+                span.gate-icon 🧵
+                span.gate-label Repair
+              .gate-card
+                span.gate-icon ♻️
+                span.gate-label Upcycle
+              .gate-card
+                span.gate-icon ✂️
+                span.gate-label Alterations
+              .gate-card
+                span.gate-icon 🌍
+                span.gate-label Sustainability
 
-      .about-text
-        h2 Why Choose Circular Fashion?
+            .gate-overlay
+              .gate-message
+                p.gate-eyebrow Members Only
+                h3 Explore Everything We Offer
+                p.gate-body Sign in to discover our full services, how it works, and join a community that cares about clothes.
+                .gate-actions
+                  a.btn.primary(href="/login") Login
+                  a.btn.ghost(href="/register") Create Account
 
-        p.lead
-          | Circular fashion is a smarter, more sustainable way to keep clothing in use for longer. Instead of discarding garments, we repair, reuse, and upcycle them—giving every piece a second life while reducing environmental impact.
+    //- ── Sections visible only when logged in ────────────────────────────
+    if user
 
-        p
-          | This approach not only helps protect the planet but also allows you to continue wearing the clothes you love, with improved longevity and style.
+      //- ── About ──
+      section#about.about
+        .container.about-container
+          .about-text
+            h2 Why Choose Circular Fashion?
 
-        h3 Benefits of Circular Fashion
+            p.lead
+              | Circular fashion is a smarter, more sustainable way to keep clothing in use for longer.
+              | Instead of discarding garments, we repair, reuse, and upcycle them — giving every piece
+              | a second life while reducing environmental impact.
 
-        .benefits-grid
-          .benefit-card
-            span 🌍
-            p Reduces textile waste and keeps clothing out of landfills
+            p
+              | This approach not only helps protect the planet but also allows you to continue wearing
+              | the clothes you love, with improved longevity and style.
 
-          .benefit-card
-            span ♻️
-            p Encourages reuse, repair, and recycling of garments
+            h3 Benefits of Circular Fashion
 
-          .benefit-card
-            span 💷
-            p Saves money by extending the life of your wardrobe
+            .benefits-grid
+              .benefit-card
+                span 🌍
+                p Reduces textile waste and keeps clothing out of landfills
+              .benefit-card
+                span ♻️
+                p Encourages reuse, repair, and recycling of garments
+              .benefit-card
+                span 💷
+                p Saves money by extending the life of your wardrobe
+              .benefit-card
+                span ✂️
+                p Promotes creativity through upcycling and redesign
+              .benefit-card
+                span 🌱
+                p Lowers carbon emissions and environmental impact
+              .benefit-card
+                span 🤝
+                p Supports ethical and responsible fashion practices
 
-          .benefit-card
-            span ✂️
-            p Promotes creativity through upcycling and redesign
+            p.closing
+              | By choosing circular fashion, you're helping build a more sustainable future —
+              | while still expressing your personal style and individuality.
 
-          .benefit-card
-            span 🌱
-            p Lowers carbon emissions and environmental impact
+      //- ── Services ──
+      section#services.services
+        .section-content
+          h2 Our Services
+          .service-grid
+            .service-card
+              .icon 🧵
+              h3 Repair
+              p Fix tears, replace zips, and restore garments.
+            .service-card
+              .icon ♻️
+              h3 Upcycle
+              p Transform old clothes into refreshed pieces.
+            .service-card
+              .icon ✂️
+              h3 Alterations
+              p Adjust fit and style perfectly.
 
-          .benefit-card
-            span 🤝
-            p Supports ethical and responsible fashion practices
+      //- ── How It Works ──
+      section#process.process
+        .section-content
+          h2 How It Works
+          .steps
+            .step
+              .icon 📅
+              h3 1. Book
+              p Choose your service and make a request.
+            .step
+              .icon 📦
+              h3 2. Send or Visit
+              p Bring your clothing to our studio or mail it in.
+            .step
+              .icon ✨
+              h3 3. Enjoy
+              p Receive your refreshed garments and reduce waste.
 
-        p.closing
-          | By choosing circular fashion, you’re helping build a more sustainable future—while still expressing your personal style and individuality.
+      //- ── CTA ──
+      section.cta
+        .section-content
+          h2 Keep Fashion in Circulation
+          p.cta-sub Have something that needs a new life?
+          a.btn.primary(href="/items/new") + Add an Item
 
-    // Services
-    section#services.services
-      .section-content
-        h2 Our Services
-
-        .service-grid
-          .service-card
-            .icon 🧵
-            h3 Repair
-            p Fix tears, replace zips, and restore garments.
-
-          .service-card
-            .icon ♻️
-            h3 Upcycle
-            p Transform old clothes into refreshed pieces.
-
-          .service-card
-            .icon ✂️
-            h3 Alterations
-            p Adjust fit and style perfectly.
-
-    // Process
-    section#process.process
-      .section-content
-        h2 How It Works
-
-        .steps
-          .step
-            .icon 📅
-            h3 1. Book
-            p Choose your service (book request)
-
-          .step
-            .icon 📦
-            h3 2. Send or Visit
-            p Bring your clothing to our studio or mail it.
-
-
-          .step
-            .icon ✨
-            h3 3. Enjoy
-            p Enjoy your refreshed garments and reduce waste.
-
-    // CTA
-    section.cta
-      .section-content
-        h2 Keep Fashion in Circulation
-        p Start your journey today
-        a.btn.primary(href="/login") Get Started
-
-    // Footer
+    //- ── Footer ──────────────────────────────────────────────────────────
     footer#contact.site-footer
       .section-content
         p © 2026 Circular Fashion
-        p Email: info@circularfashion.co.uk
-        p Repair • Upcycle • Alterations
+        p
+          | Email:&nbsp;
+          a(href="mailto:info@circularfashion.co.uk") info@circularfashion.co.uk
+        p.footer-tagline Repair • Upcycle • Alterations
 
     script(src="/script.js")
