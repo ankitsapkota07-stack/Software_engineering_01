@@ -1,83 +1,86 @@
-extends index
+doctype html
+html(lang="en")
+  head
+    title Add Item
+    link(rel="stylesheet", href="/styles.css")
 
-block content
-  main.add-item-page
-    .form-card
+  body
+    main.add-item-page
+      .form-card
+        h2 Add a Clothing Item
+        p.subtitle Please fill out the following information to add a clothing item to the marketplace.
 
-      h2 Add a Clothing Item
-      p.subtitle Tell us about the item you want to list.
+        form(action="/items" method="POST")
 
-      form(action="/items" method="POST")
+          .form-group
+            label(for="title") Item Name *
+            input#title(
+              type="text"
+              name="title"
+              required
+              placeholder="e.g. Blue Jacket"
+            )
 
-        .form-group
-          label(for="title") Item Name *
-          input#title(
-            type="text"
-            name="title"
-            required
-            placeholder="e.g. Blue Jacket"
-          )
+          .form-group
+            label(for="category") Category *
+            select#category(name="category" required)
+              option(value="" disabled selected) Select category
+              option(value="Top") Top
+              option(value="Bottom") Bottom
+              option(value="Dress") Dress
+              option(value="Outerwear") Outerwear
+              option(value="Accessories") Accessories
+              option(value="Other") Other
 
-        .form-group
-          label(for="category") Category *
-          select#category(name="category" required)
-            option(value="" disabled selected) Select category
-            option(value="Top") Top
-            option(value="Bottom") Bottom
-            option(value="Dress") Dress
-            option(value="Outerwear") Outerwear
-            option(value="Accessories") Accessories
-            option(value="Other") Other
+          .form-group
+            label(for="condition") Condition *
+            select#condition(name="condition" required)
+              option(value="" disabled selected) Select condition
+              option(value="Needs minor repair") Needs minor repair
+              option(value="Needs alteration") Needs alteration
+              option(value="Needs major repair") Needs major repair
+              option(value="Good") Good
 
-        .form-group
-          label(for="condition") Condition *
-          select#condition(name="condition" required)
-            option(value="" disabled selected) Select condition
-            option(value="Needs minor repair") Needs minor repair
-            option(value="Needs alteration") Needs alteration
-            option(value="Needs major repair") Needs major repair
-            option(value="Good") Good
+          .form-group
+            label Services Needed *
+            .service-options
+              label
+                input(type="checkbox" name="services[]" value="Repair")
+                | Repair
+              label
+                input(type="checkbox" name="services[]" value="Alterations")
+                | Alterations
+              label
+                input(type="checkbox" name="services[]" value="Upcycling")
+                | Upcycling
+              label
+                input(type="checkbox" name="services[]" value="Restyling")
+                | Restyling
 
-        .form-group
-          label Services Needed *
-          .service-options
-            label
-              input(type="checkbox" name="services[]" value="Repair")
-              | Repair
-            label
-              input(type="checkbox" name="services[]" value="Alterations")
-              | Alterations
-            label
-              input(type="checkbox" name="services[]" value="Upcycling")
-              | Upcycling
-            label
-              input(type="checkbox" name="services[]" value="Restyling")
-              | Restyling
+          .form-group
+            label(for="description") Description *
+            textarea#description(
+              name="description"
+              required
+              placeholder="Describe the item and what needs to be done"
+            )
 
-        .form-group
-          label(for="description") Description *
-          textarea#description(
-            name="description"
-            required
-            placeholder="Describe the item and what needs to be done"
-          )
+          .form-group
+            label(for="size") Size
+            input#size(
+              type="text"
+              name="size"
+              placeholder="e.g. M, 12"
+            )
 
-        .form-group
-          label(for="size") Size
-          input#size(
-            type="text"
-            name="size"
-            placeholder="e.g. M, 12"
-          )
+          .form-group
+            label(for="city") City
+            input#city(
+              type="text"
+              name="city"
+              placeholder="e.g. London"
+            )
 
-        .form-group
-          label(for="city") City
-          input#city(
-            type="text"
-            name="city"
-            placeholder="e.g. London"
-          )
-
-        .form-actions
-          a.btn-cancel(href="/items") Cancel
-          button.btn-submit(type="submit") Submit Item
+          .form-actions
+            a.btn-cancel(href="/items") Cancel
+            button.btn-submit(type="submit") Submit Item
