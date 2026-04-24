@@ -17,7 +17,7 @@ html(lang="en")
             li: a(href="#home" class="active") Home
             if user
               li: a(href="#contact") Contact
-              li: a.add-item-btn(href="/add_item") + Add Item
+              li: a.add-item-btn(href="/items/new") + Add Item
               li: a.login-btn(href="/logout") Logout
             else
               li: a(href="#about") About
@@ -35,7 +35,7 @@ html(lang="en")
           p Welcome back, #{user.username}! Ready to Swap and mend?
           .hero-buttons
             a.btn.primary(href="/items") Browse Items
-            a.btn.add-item(href="/add_item") + Add Item
+            a.btn.add-item(href="/items/new") + Add Item
             a.btn.secondary(href=`/users/${user.id}`) My Profile
 
         else
