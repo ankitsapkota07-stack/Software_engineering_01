@@ -152,7 +152,7 @@ app.get("/users/:id", async (req, res) => {
 
 // SHOW ADD ITEM FORM
 app.get("/items/new", requireLogin, (req, res) => {
-  res.render("items/add_item");
+  res.render("add_item");
 });
 
 // SAVE NEW ITEM
