@@ -110,7 +110,6 @@ app.post("/forgot-password", async (req, res) => {
     res.send("Error");
   }
 });
-module.exports = app;
 
 app.get("/db_test", async (req, res) => {
   try {
@@ -148,6 +147,60 @@ app.get("/users/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Database error");
+  }
+});
+
+// SHOW ADD ITEM FORM
+app.get("/items/new", requireLogin, (req, res) => {
+  res.render("items/add_item");
+});
+
+// SAVE NEW ITEM
+app.post("/items", requireLogin, async (req, res) => {
+  const {
+    title,
+    category,
+    condition,
+    description,
+    size,
+    city
+  } = req.body;
+
+  try {
+    // get category id
+    const categoryRows = await db.query(
+      "SELECT id FROM categories WHERE name = ?",
+      [category]
+    );
+
+    if (categoryRows.length === 0) {
+      return res.send("Invalid category");
+    }
+
+    const category_id = categoryRows[0].id;
+
+    // insert item
+    await db.query(
+      `INSERT INTO items 
+      (title, description, size, city, condition, category_id, user_id, availability_status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        title,
+        description,
+        size,
+        city,
+        condition,
+        category_id,
+        req.session.user.id,
+        "Available"
+      ]
+    );
+
+    res.redirect("/items");
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error saving item");
   }
 });
 
