@@ -4,137 +4,80 @@ block content
   main.add-item-page
     .form-card
 
-      h2  Add a Clothing Item
-      p.subtitle Tell us about the piece you'd like to bring back to life.
+      h2 Add a Clothing Item
+      p.subtitle Tell us about the item you want to list.
 
-      if errors && errors.length
-        .alert-error
-          ul
-            each err in errors
-              li= err.msg
-
-      form(action="/items" method="POST" enctype="multipart/form-data" novalidate)
-
-        p.required-note Fields marked * are required.
+      form(action="/items" method="POST")
 
         .form-group
           label(for="title") Item Name *
           input#title(
             type="text"
             name="title"
-            placeholder="e.g. Blue Linen Jacket"
-            value=formData && formData.title
             required
-            maxlength="120"
+            placeholder="e.g. Blue Jacket"
           )
-          if fieldErrors && fieldErrors.title
-            span.field-error= fieldErrors.title
 
-        .form-row
-          .form-group
-            label(for="category") Category *
-            select#category(name="category" required)
-              option(value="" disabled selected=(!formData || !formData.category)) — select —
-              each cat in ['Top', 'Bottom', 'Dress / Jumpsuit', 'Outerwear', 'Knitwear', 'Activewear', 'Accessories', 'Other']
-                option(value=cat selected=(formData && formData.category === cat))= cat
-            if fieldErrors && fieldErrors.category
-              span.field-error= fieldErrors.category
+        .form-group
+          label(for="category") Category *
+          select#category(name="category" required)
+            option(value="" disabled selected) Select category
+            option(value="Top") Top
+            option(value="Bottom") Bottom
+            option(value="Dress") Dress
+            option(value="Outerwear") Outerwear
+            option(value="Accessories") Accessories
+            option(value="Other") Other
 
-          .form-group
-            label(for="condition") Condition *
-            select#condition(name="condition" required)
-              option(value="" disabled selected=(!formData || !formData.condition)) — select —
-              each cond in ['Needs minor repair', 'Needs alteration', 'Needs major repair', 'Good – for upcycling']
-                option(value=cond selected=(formData && formData.condition === cond))= cond
-            if fieldErrors && fieldErrors.condition
-              span.field-error= fieldErrors.condition
+        .form-group
+          label(for="condition") Condition *
+          select#condition(name="condition" required)
+            option(value="" disabled selected) Select condition
+            option(value="Needs minor repair") Needs minor repair
+            option(value="Needs alteration") Needs alteration
+            option(value="Needs major repair") Needs major repair
+            option(value="Good") Good
 
         .form-group
           label Services Needed *
-          span.hint Pick all that apply.
           .service-options
-            each svc, idx in ['Repair', 'Alterations', 'Upcycling', 'Restyling']
-              - var svcId = 'svc_' + idx
-              input(
-                type="checkbox"
-                id=svcId
-                name="services"
-                value=svc
-                checked=(formData && formData.services && formData.services.includes(svc))
-              )
-              label(for=svcId)= svc
-          if fieldErrors && fieldErrors.services
-            span.field-error= fieldErrors.services
+            label
+              input(type="checkbox" name="services[]" value="Repair")
+              | Repair
+            label
+              input(type="checkbox" name="services[]" value="Alterations")
+              | Alterations
+            label
+              input(type="checkbox" name="services[]" value="Upcycling")
+              | Upcycling
+            label
+              input(type="checkbox" name="services[]" value="Restyling")
+              | Restyling
 
         .form-group
-          label(for="description") Description / Instructions *
+          label(for="description") Description *
           textarea#description(
             name="description"
-            placeholder="Describe the issue and any specific requests."
             required
-            maxlength="1000"
-          )= formData && formData.description
-          if fieldErrors && fieldErrors.description
-            span.field-error= fieldErrors.description
-
-        .form-row
-          .form-group
-            label(for="size") Size (optional)
-            input#size(
-              type="text"
-              name="size"
-              placeholder="e.g. M, 12, 32W"
-              value=formData && formData.size
-              maxlength="20"
-            )
-
-          .form-group
-            label(for="material") Material (optional)
-            input#material(
-              type="text"
-              name="material"
-              placeholder="e.g. 100% cotton"
-              value=formData && formData.material
-              maxlength="80"
-            )
+            placeholder="Describe the item and what needs to be done"
+          )
 
         .form-group
-          label Image (optional)
-          span.hint JPEG, PNG or WebP · max 5 MB
-          .upload-box(onclick="document.getElementById('image').click()")
-            input#image(type="file" name="image" accept="image/jpeg,image/png,image/webp")
-            .upload-icon 📷
-            p Click to upload a photo of your garment
-          if fieldErrors && fieldErrors.image
-            span.field-error= fieldErrors.image
+          label(for="size") Size
+          input#size(
+            type="text"
+            name="size"
+            placeholder="e.g. M, 12"
+          )
 
-        .form-row
-          .form-group
-            label(for="drop_off") Drop-off Method *
-            select#drop_off(name="drop_off" required)
-              option(value="" disabled selected=(!formData || !formData.drop_off)) — select —
-              each method in ['Visit Studio', 'Post / Mail']
-                option(value=method selected=(formData && formData.drop_off === method))= method
-
-          .form-group
-            label(for="preferred_date") Preferred Date (optional)
-            input#preferred_date(
-              type="date"
-              name="preferred_date"
-              value=formData && formData.preferred_date
-              min=new Date().toISOString().split('T')[0]
-            )
+        .form-group
+          label(for="city") City
+          input#city(
+            type="text"
+            name="city"
+            placeholder="e.g. London"
+          )
 
         .form-actions
           a.btn-cancel(href="/items") Cancel
-          button.btn-submit(type="submit") Submit Item →
-
-  script.
-    const imageInput = document.getElementById('image');
-    const uploadLabel = document.querySelector('.upload-box p');
-    if (imageInput) {
-      imageInput.addEventListener('change', () => {
-        const file = imageInput.files[0];
-        if (file) uploadLabel.textContent = '📎 ' + file.name;
-      });
-    }
+          button.btn-submit(type="submit") Submit Item
