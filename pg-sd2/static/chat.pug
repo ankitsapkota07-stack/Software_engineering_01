@@ -1,0 +1,42 @@
+doctype html
+html
+  head
+    title Chat
+    link(rel="stylesheet", href="/styles.css")
+
+  body
+    - var page = 'requests'
+    include partials/header.pug
+
+    .container.chat-page
+      .chat-header
+        h1 Request Chat
+        if itemTitle
+          p Talking about item: #{itemTitle}
+        p Status: #{request.status}
+
+      .chat-box
+        if messages && messages.length
+          each msg in messages
+            if currentUser && msg.sender_id === currentUser.id
+              .chat-message.mine
+                .chat-meta
+                  strong You
+                  span= new Date(msg.created_at).toLocaleString()
+                p= msg.message
+            else
+              .chat-message.other
+                .chat-meta
+                  strong= msg.username
+                  span= new Date(msg.created_at).toLocaleString()
+                p= msg.message
+        else
+          p No messages yet. Start the conversation.
+
+      form.chat-form(action=`/requests/${request.id}/chat` method="POST")
+        textarea(name="message" placeholder="Type your message..." required)
+        button.btn.btn-primary(type="submit") Send
+
+      a.back-link(href="/requests") ← Back to Requests
+
+    include partials/footer.pug

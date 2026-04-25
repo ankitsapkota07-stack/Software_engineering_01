@@ -411,15 +411,141 @@ app.post("/requests/:id/status", requireLogin, async (req, res) => {
       return res.status(403).send("Not allowed");
     }
 
+    // Only allow valid status updates
+    if (!["accepted", "rejected", "completed"].includes(status)) {
+      return res.status(400).send("Invalid status");
+    }
+
     await db.query(
       "UPDATE requests SET status = ? WHERE id = ?",
       [status, requestId]
     );
 
+    // IMPORTANT:
+    // If the request is accepted, open the chat immediately
+    if (status === "accepted") {
+      return res.redirect(`/requests/${requestId}/chat`);
+    }
+
+    // Otherwise go back to requests page
     res.redirect("/requests");
   } catch (err) {
     console.error(err);
     res.status(500).send("Update error");
+  }
+});
+
+// =====================================
+// CHAT FOR ACCEPTED REQUESTS ONLY
+// =====================================
+
+// View chat page for a request
+app.get("/requests/:id/chat", requireLogin, async (req, res) => {
+  const requestId = req.params.id;
+  const currentUserId = req.session.user.id;
+
+  try {
+    // Get the request first
+    const requestRows = await db.query(
+      "SELECT * FROM requests WHERE id = ?",
+      [requestId]
+    );
+
+    if (requestRows.length === 0) {
+      return res.status(404).send("Request not found");
+    }
+
+    const request = requestRows[0];
+
+    // Only sender or recipient can view the chat
+    const isParticipant =
+      request.sender_id === currentUserId || request.recipient_id === currentUserId;
+
+    if (!isParticipant) {
+      return res.status(403).send("Not allowed");
+    }
+
+    // Chat should only open after request is accepted
+    if (request.status !== "accepted") {
+      return res.status(403).send("Chat opens only after request is accepted");
+    }
+
+    // Load all messages for this request
+    const messages = await db.query(
+      `SELECT messages.*, users.username
+       FROM messages
+       JOIN users ON messages.sender_id = users.id
+       WHERE messages.request_id = ?
+       ORDER BY messages.created_at ASC`,
+      [requestId]
+    );
+
+    // Optional: get item title for display
+    const itemRows = request.item_id
+      ? await db.query("SELECT title FROM items WHERE id = ?", [request.item_id])
+      : [];
+
+    res.render("chat", {
+      request,
+      messages,
+      itemTitle: itemRows.length ? itemRows[0].title : null
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
+});
+
+// Send a new message inside chat
+app.post("/requests/:id/chat", requireLogin, async (req, res) => {
+  const requestId = req.params.id;
+  const currentUserId = req.session.user.id;
+  const { message } = req.body;
+
+  try {
+    if (!message || !message.trim()) {
+      return res.redirect(`/requests/${requestId}/chat`);
+    }
+
+    const requestRows = await db.query(
+      "SELECT * FROM requests WHERE id = ?",
+      [requestId]
+    );
+
+    if (requestRows.length === 0) {
+      return res.status(404).send("Request not found");
+    }
+
+    const request = requestRows[0];
+
+    const isParticipant =
+      request.sender_id === currentUserId || request.recipient_id === currentUserId;
+
+    if (!isParticipant) {
+      return res.status(403).send("Not allowed");
+    }
+
+    if (request.status !== "accepted") {
+      return res.status(403).send("Chat opens only after request is accepted");
+    }
+
+    // Decide who receives the message
+    const receiverId =
+      request.sender_id === currentUserId
+        ? request.recipient_id
+        : request.sender_id;
+
+    await db.query(
+      `INSERT INTO messages (request_id, sender_id, receiver_id, message)
+       VALUES (?, ?, ?, ?)`,
+      [requestId, currentUserId, receiverId, message.trim()]
+    );
+
+    res.redirect(`/requests/${requestId}/chat`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Message send error");
   }
 });
 

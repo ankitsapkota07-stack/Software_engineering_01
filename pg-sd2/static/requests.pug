@@ -16,32 +16,43 @@ html
           each request in requests
             .card
               h2= request.request_type === 'repair' ? 'Repair Request' : 'Exchange Request'
+
               p
                 strong From:
                 |  #{request.sender_name}
+
               p
                 strong To:
                 |  #{request.recipient_name}
+
               if request.item_title
                 p
                   strong Item:
                   |  #{request.item_title}
+
               p
                 strong Status:
                 |  #{request.status}
+
               p
                 strong Message:
                 |  #{request.message || "No message"}
 
-              if currentUser && request.recipient_id === currentUser.id && request.status === 'pending'
-                form(action=`/requests/${request.id}/status` method="POST")
-                  input(type="hidden" name="status" value="accepted")
-                  button.btn.btn-primary(type="submit") Accept
+              .request-actions
+                if request.status === 'accepted'
+                  a.btn.btn-primary(href=`/requests/${request.id}/chat`) Open Chat
 
-                form(action=`/requests/${request.id}/status` method="POST" style="margin-top: 10px;")
-                  input(type="hidden" name="status" value="rejected")
-                  button.btn.btn-outline(type="submit") Reject
+                if currentUser && request.recipient_id === currentUser.id && request.status === 'pending'
+                  form(action=`/requests/${request.id}/status` method="POST")
+                    input(type="hidden" name="status" value="accepted")
+                    button.btn.btn-primary(type="submit") Accept
+
+                  form(action=`/requests/${request.id}/status` method="POST")
+                    input(type="hidden" name="status" value="rejected")
+                    button.btn.btn-outline(type="submit") Reject
       else
-        p No requests yet.
+        .empty-state-box
+          h2 No requests yet
+          p You have not sent or received any requests yet.
 
     include partials/footer.pug
