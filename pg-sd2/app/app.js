@@ -306,6 +306,123 @@ app.get("/experts/:id", async (req, res) => {
     res.status(500).send("Database error");
   }
 });
+
+// COMMUNITY USER REQUESTS AN ITEM
+app.post("/items/:id/request", requireCommunity, async (req, res) => {
+  const { message } = req.body;
+  const itemId = req.params.id;
+
+  try {
+    const itemRows = await db.query(
+      "SELECT * FROM items WHERE id = ?",
+      [itemId]
+    );
+
+    if (itemRows.length === 0) {
+      return res.status(404).send("Item not found");
+    }
+
+    const item = itemRows[0];
+
+    await db.query(
+      `INSERT INTO requests (request_type, sender_id, recipient_id, item_id, message)
+       VALUES (?, ?, ?, ?, ?)`,
+      ["exchange", req.session.user.id, item.user_id, itemId, message || null]
+    );
+
+    res.redirect(`/items/${itemId}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Request error");
+  }
+});
+
+// COMMUNITY USER REQUESTS REPAIR FROM AN EXPERT
+app.post("/experts/:id/request", requireCommunity, async (req, res) => {
+  const { message } = req.body;
+  const expertId = req.params.id;
+
+  try {
+    const expertRows = await db.query(
+      "SELECT * FROM users WHERE id = ? AND role = 'expert'",
+      [expertId]
+    );
+
+    if (expertRows.length === 0) {
+      return res.status(404).send("Expert not found");
+    }
+
+    await db.query(
+      `INSERT INTO requests (request_type, sender_id, recipient_id, message)
+       VALUES (?, ?, ?, ?)`,
+      ["repair", req.session.user.id, expertId, message || null]
+    );
+
+    res.redirect(`/experts/${expertId}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Request error");
+  }
+});
+
+// VIEW ALL REQUESTS FOR CURRENT USER
+app.get("/requests", requireLogin, async (req, res) => {
+  try {
+    const requests = await db.query(
+      `SELECT requests.*, 
+              sender.username AS sender_name,
+              recipient.username AS recipient_name,
+              items.title AS item_title
+       FROM requests
+       JOIN users AS sender ON requests.sender_id = sender.id
+       JOIN users AS recipient ON requests.recipient_id = recipient.id
+       LEFT JOIN items ON requests.item_id = items.id
+       WHERE requests.sender_id = ? OR requests.recipient_id = ?
+       ORDER BY requests.created_at DESC`,
+      [req.session.user.id, req.session.user.id]
+    );
+
+    res.render("requests", { requests });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
+});
+
+// ACCEPT / REJECT A REQUEST
+app.post("/requests/:id/status", requireLogin, async (req, res) => {
+  const { status } = req.body;
+  const requestId = req.params.id;
+
+  try {
+    const rows = await db.query(
+      "SELECT * FROM requests WHERE id = ?",
+      [requestId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).send("Request not found");
+    }
+
+    const request = rows[0];
+
+    // Only the person receiving the request can update it
+    if (request.recipient_id !== req.session.user.id) {
+      return res.status(403).send("Not allowed");
+    }
+
+    await db.query(
+      "UPDATE requests SET status = ? WHERE id = ?",
+      [status, requestId]
+    );
+
+    res.redirect("/requests");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Update error");
+  }
+});
+
 // SHOW ADD ITEM FORM
 app.get("/items/new", requireCommunity, async (req, res) => {
   try {

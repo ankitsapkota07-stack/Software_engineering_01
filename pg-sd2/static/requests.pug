@@ -1,0 +1,47 @@
+doctype html
+html
+  head
+    title My Requests
+    link(rel="stylesheet", href="/styles.css")
+
+  body
+    - var page = 'requests'
+    include partials/header.pug
+
+    .container(style="padding: 40px 20px;")
+      h1.page-title My Requests
+
+      if requests && requests.length
+        .items-grid
+          each request in requests
+            .card
+              h2= request.request_type === 'repair' ? 'Repair Request' : 'Exchange Request'
+              p
+                strong From:
+                |  #{request.sender_name}
+              p
+                strong To:
+                |  #{request.recipient_name}
+              if request.item_title
+                p
+                  strong Item:
+                  |  #{request.item_title}
+              p
+                strong Status:
+                |  #{request.status}
+              p
+                strong Message:
+                |  #{request.message || "No message"}
+
+              if currentUser && request.recipient_id === currentUser.id && request.status === 'pending'
+                form(action=`/requests/${request.id}/status` method="POST")
+                  input(type="hidden" name="status" value="accepted")
+                  button.btn.btn-primary(type="submit") Accept
+
+                form(action=`/requests/${request.id}/status` method="POST" style="margin-top: 10px;")
+                  input(type="hidden" name="status" value="rejected")
+                  button.btn.btn-outline(type="submit") Reject
+      else
+        p No requests yet.
+
+    include partials/footer.pug

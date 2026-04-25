@@ -56,4 +56,12 @@ html(lang="en")
           else
             p No tags added for this item.
 
+        //- Logic to allow community members to request an item they don't own
+        if currentUser && currentUser.role === 'community' && currentUser.id !== item.user_id
+          .content-card(style="margin-top: 20px;")
+            h2.section-title Request This Item
+            form(action=`/items/${item.id}/request` method="POST")
+              textarea(name="message" placeholder="Write a short message to request this item" required)
+              button.btn.btn-primary(type="submit") Send Request
+
     include partials/footer.pug
