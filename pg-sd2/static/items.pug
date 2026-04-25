@@ -7,26 +7,8 @@ html(lang="en")
     link(rel="stylesheet", href="/styles.css")
 
   body
-    header.site-header
-      .container.header-inner
-        a.logo(href="/") Circular Fashion
-
-        nav.nav
-          ul
-            li
-              a(href="/") Home
-            li
-              a.active(href="/items") Browse Items
-            if currentUser
-              li
-                a(href=`/users/${currentUser.id}`) My Profile
-              li
-                a.add-item-btn(href="/items/new") + Add Item
-              li
-                a.login-btn(href="/logout") Logout
-            else
-              li
-                a.login-btn(href="/login") Login
+    - var page = 'items'
+    include partials/header.pug
 
     section.items-hero
       .container
@@ -97,3 +79,5 @@ html(lang="en")
           p
             | Every item you give a second life helps reduce waste and supports a stronger,
             | more compassionate community.
+
+    include partials/footer.pug

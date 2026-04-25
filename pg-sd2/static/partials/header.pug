@@ -1,0 +1,20 @@
+header.site-header
+  .container.header-inner
+    a.logo(href="/") Circular Fashion
+
+    nav.nav
+      ul
+        li
+          a(href="/") Home
+        li
+          a(href="/items" class=(page === 'items' ? 'active' : '')) Browse Items
+        if currentUser
+          li
+            a(href=`/users/${currentUser.id}` class=(page === 'profile' ? 'active' : '')) My Profile
+          li
+            a.add-item-btn(href="/items/new") + Add Item
+          li
+            a.login-btn(href="/logout") Logout
+        else
+          li
+            a.login-btn(href="/login") Login

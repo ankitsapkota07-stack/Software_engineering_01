@@ -7,38 +7,73 @@ html(lang="en")
     link(rel="stylesheet" href="/styles.css")
 
   body
-    h2 Add a Clothing Item
+    - var page = 'items'
+    include partials/header.pug
 
-    form(action="/items" method="POST" enctype="multipart/form-data")
-      label(for="title") Item Name
-      input(type="text" name="title" id="title" required)
+    section.items-hero
+      .container
+        .items-hero-content
+          .items-hero-text
+            span.hero-tag Community Listings
+            h1 Add a New Item
+            p
+              | Share a clothing item with the community by filling in the details below.
+              | You can upload a photo from your computer or add an image URL.
 
-      label(for="category_id") Category
-      select(name="category_id" id="category_id" required)
-        option(value="") Select category
-        each category in categories
-          option(value=category.id)= category.name
+          .items-hero-actions
+            a.btn.outline(href="/items") ← Back to Items
+            a.btn.primary(href=`/users/${currentUser.id}`) My Profile
 
-      label(for="condition") Condition
-      select(name="condition" id="condition" required)
-        option(value="New") New
-        option(value="Good") Good
-        option(value="Needs minor repair") Needs minor repair
-        option(value="Needs major repair") Needs major repair
+    section.items-section
+      .container
+        .content-card.add-item-card
+          h2.section-title Add a Clothing Item
+          p.form-helper Complete the form below to create a new listing.
 
-      label(for="description") Description
-      textarea(name="description" id="description" required)
+          form.add-item-form(action="/items" method="POST" enctype="multipart/form-data")
+            .form-group
+              label(for="title") Item Name
+              input(type="text" name="title" id="title" required)
 
-      label(for="size") Size
-      input(type="text" name="size" id="size")
+            .form-group
+              label(for="category_id") Category
+              select(name="category_id" id="category_id" required)
+                option(value="") Select category
+                each category in categories
+                  option(value=category.id)= category.name
 
-      label(for="city") City
-      input(type="text" name="city" id="city")
+            .form-group
+              label(for="condition") Condition
+              select(name="condition" id="condition" required)
+                option(value="") Select condition
+                option(value="New") New
+                option(value="Good") Good
+                option(value="Needs minor repair") Needs minor repair
+                option(value="Needs major repair") Needs major repair
 
-      label(for="image_file") Upload photo from computer
-      input(type="file" name="image_file" id="image_file" accept="image/*")
+            .form-group
+              label(for="description") Description
+              textarea(name="description" id="description" required)
 
-      label(for="image_url") Or paste image URL
-      input(type="url" name="image_url" id="image_url" placeholder="https://example.com/photo.jpg")
+            .form-row
+              .form-group
+                label(for="size") Size
+                input(type="text" name="size" id="size" placeholder="e.g. M, 12")
 
-      button(type="submit") Submit Item
+              .form-group
+                label(for="city") City
+                input(type="text" name="city" id="city" placeholder="e.g. Roehampton")
+
+            .form-group
+              label(for="image_file") Upload photo from computer
+              input(type="file" name="image_file" id="image_file" accept="image/*")
+
+            .form-group
+              label(for="image_url") Or paste image URL
+              input(type="url" name="image_url" id="image_url" placeholder="https://example.com/photo.jpg")
+
+            .form-actions
+              a.btn.btn-outline(href="/items") Cancel
+              button.btn.btn-primary(type="submit") Submit Item
+
+    include partials/footer.pug
