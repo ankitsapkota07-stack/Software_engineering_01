@@ -3,45 +3,97 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title Items
+    title Available Items
     link(rel="stylesheet", href="/styles.css")
 
   body
-    h1 Available Items
+    header.site-header
+      .container.header-inner
+        a.logo(href="/") Circular Fashion
 
-    a.btn.btn-outline(href="/") ← Back to Home
-
-    .items-grid
-      if items && items.length
-        each item in items
-          .card
-            if item.image_url
-              img.item-card-image(src=item.image_url alt=item.title)
+        nav.nav
+          ul
+            li
+              a(href="/") Home
+            li
+              a.active(href="/items") Browse Items
+            if currentUser
+              li
+                a(href=`/users/${currentUser.id}`) My Profile
+              li
+                a.add-item-btn(href="/items/new") + Add Item
+              li
+                a.login-btn(href="/logout") Logout
             else
-              .item-placeholder No Image
+              li
+                a.login-btn(href="/login") Login
 
-            h2= item.title
-
+    section.items-hero
+      .container
+        .items-hero-content
+          .items-hero-text
+            span.hero-tag Community Listings
+            h1 Explore Available Items
             p
-              strong Category:
-              |  #{item.category_name || "Uncategorised"}
+              | Discover clothing and fashion items shared by the community.
+              | Browse listings, view details, and support circular fashion.
 
+          .items-hero-actions
+            a.btn.outline(href="/") ← Back to Home
+            if currentUser
+              a.btn.primary(href="/items/new") + Add New Item
+
+    section.items-section
+      .container
+        if items && items.length
+          .items-summary
             p
-              strong Owner:
-              |  #{item.username || "Unknown"}
+              strong #{items.length}
+              |  item#{items.length === 1 ? '' : 's'} available
 
-            p
-              strong Condition:
-              |  #{item.condition || "Not specified"}
+          .items-grid.advanced-items-grid
+            each item in items
+              .item-listing-card
+                if item.image_url
+                  img.item-card-image(src=item.image_url alt=item.title)
+                else
+                  .item-placeholder No Image
 
-            p
-              strong City:
-              |  #{item.city || "Not specified"}
+                .item-card-body
+                  .item-card-top
+                    h2.item-card-title= item.title
+                    span.item-status-badge= item.availability_status || "Available"
 
-            p
-              strong Status:
-              |  #{item.availability_status || "Available"}
+                  p.item-card-category= item.category_name || "Uncategorised"
 
-            a.btn-view(href=`/items/${item.id}`) View Details
-      else
-        p No items available yet.
+                  .item-card-meta
+                    p
+                      strong Owner:
+                      |  #{item.username || "Unknown"}
+                    p
+                      strong Condition:
+                      |  #{item.condition || "Not specified"}
+                    p
+                      strong City:
+                      |  #{item.city || "Not specified"}
+
+                  .item-card-actions
+                    a.btn-view(href=`/items/${item.id}`) View Details
+                    if item.user_id
+                      a.btn-outline(href=`/users/${item.user_id}`) View Owner
+        else
+          .empty-state-box
+            h2 No items available yet
+            p Be the first to add an item to the community listings.
+            if currentUser
+              a.btn.primary(href="/items/new") Add First Item
+            else
+              a.btn.primary(href="/login") Login to Add Item
+
+    section.section-reuse-banner
+      .container
+        .reuse-banner-content
+          h2 Choose to Reuse. Choose to Inspire.
+          p
+            | Every item you give a second life helps reduce waste and supports a stronger,
+            | more compassionate community.
