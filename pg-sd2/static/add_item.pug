@@ -1,86 +1,44 @@
 doctype html
 html(lang="en")
   head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title Add Item
-    link(rel="stylesheet", href="/add_item_design.css")
+    link(rel="stylesheet" href="/styles.css")
 
   body
-    main.add-item-page
-      .form-card
-        h2 Add a Clothing Item
-        p.subtitle Please fill out the following information to add a clothing item to the marketplace.
+    h2 Add a Clothing Item
 
-        form(action="/items" method="POST")
+    form(action="/items" method="POST" enctype="multipart/form-data")
+      label(for="title") Item Name
+      input(type="text" name="title" id="title" required)
 
-          .form-group
-            label(for="title") Item Name *
-            input#title(
-              type="text"
-              name="title"
-              required
-              placeholder="e.g. Blue Jacket"
-            )
+      label(for="category_id") Category
+      select(name="category_id" id="category_id" required)
+        option(value="") Select category
+        each category in categories
+          option(value=category.id)= category.name
 
-          .form-group
-            label(for="category") Category *
-            select#category(name="category" required)
-              option(value="" disabled selected) Select category
-              option(value="Top") Top
-              option(value="Bottom") Bottom
-              option(value="Dress") Dress
-              option(value="Outerwear") Outerwear
-              option(value="Accessories") Accessories
-              option(value="Other") Other
+      label(for="condition") Condition
+      select(name="condition" id="condition" required)
+        option(value="New") New
+        option(value="Good") Good
+        option(value="Needs minor repair") Needs minor repair
+        option(value="Needs major repair") Needs major repair
 
-          .form-group
-            label(for="condition") Condition *
-            select#condition(name="condition" required)
-              option(value="" disabled selected) Select condition
-              option(value="Needs minor repair") Needs minor repair
-              option(value="Needs alteration") Needs alteration
-              option(value="Needs major repair") Needs major repair
-              option(value="Good") Good
+      label(for="description") Description
+      textarea(name="description" id="description" required)
 
-          .form-group
-            label Services Needed *
-            .service-options
-              label
-                input(type="checkbox" name="services[]" value="Repair")
-                | Repair
-              label
-                input(type="checkbox" name="services[]" value="Alterations")
-                | Alterations
-              label
-                input(type="checkbox" name="services[]" value="Upcycling")
-                | Upcycling
-              label
-                input(type="checkbox" name="services[]" value="Restyling")
-                | Restyling
+      label(for="size") Size
+      input(type="text" name="size" id="size")
 
-          .form-group
-            label(for="description") Description *
-            textarea#description(
-              name="description"
-              required
-              placeholder="Describe the item and what needs to be done"
-            )
+      label(for="city") City
+      input(type="text" name="city" id="city")
 
-          .form-group
-            label(for="size") Size
-            input#size(
-              type="text"
-              name="size"
-              placeholder="e.g. M, 12"
-            )
+      label(for="image_file") Upload photo from computer
+      input(type="file" name="image_file" id="image_file" accept="image/*")
 
-          .form-group
-            label(for="city") City
-            input#city(
-              type="text"
-              name="city"
-              placeholder="e.g. London"
-            )
+      label(for="image_url") Or paste image URL
+      input(type="url" name="image_url" id="image_url" placeholder="https://example.com/photo.jpg")
 
-          .form-actions
-            a.btn-cancel(href="/items") Cancel
-            button.btn-submit(type="submit") Submit Item
+      button(type="submit") Submit Item

@@ -1,24 +1,47 @@
 doctype html
 html(lang="en")
   head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title Items
     link(rel="stylesheet", href="/styles.css")
 
   body
     h1 Available Items
 
-    // Back Button
-    a.btn.back(href="/") ← Back to Home
+    a.btn.btn-outline(href="/") ← Back to Home
 
     .items-grid
-      each item in items
-        .card
-          h2= item.title
-          p 
-            strong Category:
-            |  #{item.category_name}
-          p 
-            strong Owner:
-            |  #{item.username}
+      if items && items.length
+        each item in items
+          .card
+            if item.image_url
+              img.item-card-image(src=item.image_url alt=item.title)
+            else
+              .item-placeholder No Image
 
-          a.btn-view(href=`/items/${item.id}`) View Details
+            h2= item.title
+
+            p
+              strong Category:
+              |  #{item.category_name || "Uncategorised"}
+
+            p
+              strong Owner:
+              |  #{item.username || "Unknown"}
+
+            p
+              strong Condition:
+              |  #{item.condition || "Not specified"}
+
+            p
+              strong City:
+              |  #{item.city || "Not specified"}
+
+            p
+              strong Status:
+              |  #{item.availability_status || "Available"}
+
+            a.btn-view(href=`/items/${item.id}`) View Details
+      else
+        p No items available yet.

@@ -1,39 +1,53 @@
 doctype html
 html(lang="en")
   head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title= item.title
     link(rel="stylesheet", href="/styles.css")
 
   body
-    // back button
-    a.back-link(href="/items") ← Back
+    a.back-link(href="/items") ← Back to Items
+
     .item-container
       .item-card
+        if item.image_url
+          img.item-detail-image(src=item.image_url alt=item.title)
+        else
+          .item-placeholder No Image Available
+
         h1= item.title
 
         .item-meta
-          span.badge #{item.category_name}
-          span.status #{item.availability_status}
+          span.badge #{item.category_name || "Uncategorised"}
+          span.status #{item.availability_status || "Available"}
 
         .item-info
-          p 
+          p
             strong Owner:
-            |  #{item.username}
-          p 
+            |  #{item.username || "Unknown"}
+
+          p
             strong Size:
-            |  #{item.size}
-          p 
+            |  #{item.size || "Not specified"}
+
+          p
             strong City:
-            |  #{item.city}
+            |  #{item.city || "Not specified"}
+
+          p
+            strong Condition:
+            |  #{item.condition || "Not specified"}
 
         .item-description
           h3 Description
-          p= item.description
+          p= item.description || "No description provided."
 
         .item-tags
           h3 Tags
-          ul
-            each tag in tags
-              li.tag= tag.name
-
-        
+          if tags && tags.length
+            ul
+              each tag in tags
+                li.tag= tag.name
+          else
+            p No tags added for this item.

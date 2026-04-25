@@ -1,3 +1,5 @@
+const fs = require("fs");
+const multer = require("multer");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 const express = require("express");
@@ -5,6 +7,23 @@ const path = require("path");
 const db = require("./services/db");
 
 const app = express();
+const uploadPath = path.join(__dirname, "../static/uploads");
+
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + "-" + file.originalname.replace(/\s+/g, "-");
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({ storage });
 
 // If your .pug files are inside /static, keep this.
 // If you move them to /views later, change "../static" to "../views"
@@ -213,30 +232,48 @@ app.post("/users/:id/rate", requireLogin, async (req, res) => {
 });
 
 // SHOW ADD ITEM FORM
-app.get("/items/new", requireLogin, (req, res) => {
-  res.render("add_item");
+app.get("/items/new", requireLogin, async (req, res) => {
+  try {
+    const categories = await db.query("SELECT id, name FROM categories ORDER BY name");
+    res.render("add_item", { categories });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error loading add item page");
+  }
 });
-
 // SAVE NEW ITEM
-app.post("/items", requireLogin, async (req, res) => {
-  const { title, category, condition, description, size, city } = req.body;
+app.post("/items", requireLogin, upload.single("image_file"), async (req, res) => {
+  const {
+    title,
+    category_id,
+    condition,
+    description,
+    size,
+    city,
+    image_url
+  } = req.body;
 
   try {
     const categoryRows = await db.query(
-      "SELECT id FROM categories WHERE name = ?",
-      [category]
+      "SELECT id FROM categories WHERE id = ?",
+      [category_id]
     );
 
     if (categoryRows.length === 0) {
       return res.status(400).send("Invalid category");
     }
 
-    const category_id = categoryRows[0].id;
+    const finalImage =
+      req.file
+        ? `/uploads/${req.file.filename}`
+        : image_url && image_url.trim() !== ""
+        ? image_url.trim()
+        : null;
 
     await db.query(
       `INSERT INTO items
-      (title, description, size, city, \`condition\`, category_id, user_id, availability_status)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      (title, description, size, city, \`condition\`, category_id, user_id, availability_status, image_url)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         title,
         description,
@@ -246,6 +283,7 @@ app.post("/items", requireLogin, async (req, res) => {
         category_id,
         req.session.user.id,
         "Available",
+        finalImage
       ]
     );
 
