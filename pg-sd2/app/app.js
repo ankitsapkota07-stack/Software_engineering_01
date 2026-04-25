@@ -81,7 +81,10 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("register");
+  res.render("register", {
+    error: null,
+    formData: {}
+  });
 });
 
 app.get("/forgot-password", (req, res) => {
@@ -108,19 +111,63 @@ app.post("/register", async (req, res) => {
   } = req.body;
 
   try {
-    // Hash password before saving to DB
+    const cleanUsername = username.trim();
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Check if username already exists
+    const existingUsername = await db.query(
+      "SELECT id FROM users WHERE LOWER(username) = LOWER(?) LIMIT 1",
+      [cleanUsername]
+    );
+
+    if (existingUsername.length > 0) {
+      return res.status(400).render("register", {
+        error: "Username already taken",
+        formData: {
+          full_name,
+          email,
+          phone,
+          username: cleanUsername,
+          role,
+          skills,
+          service_description
+        }
+      });
+    }
+
+    // Check if email already exists
+    const existingEmail = await db.query(
+      "SELECT id FROM users WHERE LOWER(email) = LOWER(?) LIMIT 1",
+      [cleanEmail]
+    );
+
+    if (existingEmail.length > 0) {
+      return res.status(400).render("register", {
+        error: "Email already registered",
+        formData: {
+          full_name,
+          email,
+          phone,
+          username: cleanUsername,
+          role,
+          skills,
+          service_description
+        }
+      });
+    }
+
+    // Hash password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Save both normal users and experts in the same users table
     await db.query(
       `INSERT INTO users 
       (full_name, email, phone, username, password, location, bio, member_since, rating, role, skills, service_description) 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         full_name,
-        email,
+        cleanEmail,
         phone,
-        username,
+        cleanUsername,
         hashedPassword,
         "Unknown",
         "New user",
@@ -134,6 +181,22 @@ app.post("/register", async (req, res) => {
 
     res.redirect("/login");
   } catch (err) {
+    // If DB unique constraint catches duplicate
+    if (err.code === "ER_DUP_ENTRY") {
+      return res.status(400).render("register", {
+        error: "Username or email already exists",
+        formData: {
+          full_name,
+          email,
+          phone,
+          username,
+          role,
+          skills,
+          service_description
+        }
+      });
+    }
+
     console.error(err);
     res.status(500).send("Registration error");
   }

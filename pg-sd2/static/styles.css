@@ -1523,3 +1523,14 @@ body > h1,
     max-width: 100%;
   }
 }
+.form-error {
+  max-width: 400px;
+  margin: 20px auto 0;
+  padding: 12px 14px;
+  background: #fde8e8;
+  color: #b42318;
+  border: 1px solid #f5c2c7;
+  border-radius: 10px;
+  font-weight: 600;
+  text-align: center;
+}

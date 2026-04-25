@@ -10,22 +10,25 @@ html
 
     h2 Create Account
 
+    if error
+      p.form-error= error
+
     form(method="POST", action="/register")
       .form-group
         label(for="full_name") Full Name
-        input(type="text", name="full_name", id="full_name", required)
+        input(type="text", name="full_name", id="full_name", required, value=formData.full_name || "")
 
       .form-group
         label(for="email") Email
-        input(type="email", name="email", id="email", required)
+        input(type="email", name="email", id="email", required, value=formData.email || "")
 
       .form-group
         label(for="phone") Phone
-        input(type="text", name="phone", id="phone", required)
+        input(type="text", name="phone", id="phone", required, value=formData.phone || "")
 
       .form-group
         label(for="username") Username
-        input(type="text", name="username", id="username", required)
+        input(type="text", name="username", id="username", required, value=formData.username || "")
 
       .form-group
         label(for="password") Password
@@ -34,16 +37,16 @@ html
       .form-group
         label(for="role") Register As
         select(name="role", id="role", required)
-          option(value="community") Community User
-          option(value="expert") Alteration Expert
+          option(value="community", selected=formData.role === "community") Community User
+          option(value="expert", selected=formData.role === "expert") Alteration Expert
 
       .form-group
         label(for="skills") Skills (experts only)
-        input(type="text", name="skills", id="skills", placeholder="e.g. Hemming, zip repair, resizing")
+        input(type="text", name="skills", id="skills", placeholder="e.g. Hemming, zip repair, resizing", value=formData.skills || "")
 
       .form-group
         label(for="service_description") Service Description (experts only)
-        textarea(name="service_description", id="service_description", placeholder="Describe the repair or alteration services you offer")
+        textarea(name="service_description", id="service_description", placeholder="Describe the repair or alteration services you offer")= formData.service_description || ""
 
       button(type="submit") Register
 
