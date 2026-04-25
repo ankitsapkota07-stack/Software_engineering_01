@@ -5,32 +5,50 @@ html
     link(rel="stylesheet", href="/styles.css")
 
   body
+    - var page = ''
+    include partials/header.pug
+
     h2 Create Account
 
     form(method="POST", action="/register")
-      
       .form-group
-        label Full Name
-        input(type="text", name="fullname", required)
+        label(for="full_name") Full Name
+        input(type="text", name="full_name", id="full_name", required)
 
       .form-group
-        label Email
-        input(type="email", name="email", required)
+        label(for="email") Email
+        input(type="email", name="email", id="email", required)
 
       .form-group
-        label Phone
-        input(type="text", name="phone", required)
+        label(for="phone") Phone
+        input(type="text", name="phone", id="phone", required)
 
       .form-group
-        label Username
-        input(type="text", name="username", required)
+        label(for="username") Username
+        input(type="text", name="username", id="username", required)
 
       .form-group
-        label Password
-        input(type="password", name="password", required)
+        label(for="password") Password
+        input(type="password", name="password", id="password", required)
+
+      .form-group
+        label(for="role") Register As
+        select(name="role", id="role", required)
+          option(value="community") Community User
+          option(value="expert") Alteration Expert
+
+      .form-group
+        label(for="skills") Skills (experts only)
+        input(type="text", name="skills", id="skills", placeholder="e.g. Hemming, zip repair, resizing")
+
+      .form-group
+        label(for="service_description") Service Description (experts only)
+        textarea(name="service_description", id="service_description", placeholder="Describe the repair or alteration services you offer")
 
       button(type="submit") Register
 
       p.form-footer
         | Already have an account?
         a(href="/login")  Login
+
+    include partials/footer.pug

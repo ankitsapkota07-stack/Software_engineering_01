@@ -7,10 +7,13 @@ html(lang="en")
     link(rel="stylesheet" href="/styles.css")
 
   body
+    - var page = 'profile'
     - const isOwnProfile = currentUser && String(currentUser.id) === String(profileUser.id)
     - const safeRating = Number(profileUser.rating || 0).toFixed(1)
-    - const completedListings = items ? items.filter(item => item.status && item.status.toLowerCase() === "completed").length : 0
-    - const availableListings = items ? items.filter(item => !item.status || item.status.toLowerCase() === "available").length : 0
+    - const completedListings = items ? items.filter(item => item.availability_status && item.availability_status.toLowerCase() === "completed").length : 0
+    - const availableListings = items ? items.filter(item => !item.availability_status || item.availability_status.toLowerCase() === "available").length : 0
+
+    include partials/header.pug
 
     .profile-page
       .profile-container
@@ -22,8 +25,8 @@ html(lang="en")
                 = profileUser.username ? profileUser.username.charAt(0).toUpperCase() : "U"
 
               if isOwnProfile
-                a.btn.btn-outline(href="/") Edit Profile
-              
+                a.btn.btn-outline(href="/items/new") + Add Item
+
             .profile-right
               .profile-header-row
                 h1.profile-name= profileUser.username
@@ -46,10 +49,11 @@ html(lang="en")
 
               .profile-actions
                 if isOwnProfile
-                  a.btn.btn-primary(href="/") Back Home
-                else if currentUser
-                  a.btn.btn-primary(href="/") Message User
+                  a.btn.btn-primary(href="/items/new") + Add Item
                   a.btn.btn-outline(href="/") Back Home
+                else if currentUser
+                  a.btn.btn-primary(href="/") Back Home
+                  a.btn.btn-outline(href=`/items`) Browse Items
                 else
                   a.btn.btn-outline(href="/login") Login to interact
 
@@ -113,13 +117,16 @@ html(lang="en")
                 .listing-grid
                   each item in items
                     .listing-card
-                      .listing-image
-                        span= item.title ? item.title.charAt(0).toUpperCase() : "I"
+                      if item.image_url
+                        img.item-card-image(src=item.image_url alt=item.title)
+                      else
+                        .listing-image
+                          span= item.title ? item.title.charAt(0).toUpperCase() : "I"
 
                       .listing-details
                         h3.listing-title= item.title || "Untitled Item"
                         p.listing-category Category: #{item.category_name || "Uncategorised"}
-                        p.listing-status Status: #{item.status || "Available"}
+                        p.listing-status Status: #{item.availability_status || "Available"}
 
                         if item.description
                           p.listing-description= item.description.length > 90 ? item.description.substring(0, 90) + "..." : item.description
@@ -135,3 +142,6 @@ html(lang="en")
               h2.section-title Reviews
               .review-box
                 p.review-stars ⭐ ⭐ ⭐ ⭐ ☆
+                p Review system can be expanded later with written feedback.
+
+    include partials/footer.pug

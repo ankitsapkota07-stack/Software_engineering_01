@@ -1,0 +1,32 @@
+doctype html
+html
+  head
+    title Experts
+    link(rel="stylesheet", href="/styles.css")
+
+  body
+    - var page = 'experts'
+    include partials/header.pug
+
+    .container(style="padding: 40px 20px;")
+      h1.page-title Alteration Experts
+
+      if experts && experts.length
+        .items-grid
+          each expert in experts
+            .card
+              h2= expert.full_name || expert.username
+              p
+                strong Username:
+                |  #{expert.username}
+              p
+                strong Skills:
+                |  #{expert.skills || "Not provided"}
+              p
+                strong Services:
+                |  #{expert.service_description || "No description yet"}
+              a.btn-view(href=`/experts/${expert.id}`) View Profile
+      else
+        p No experts available yet.
+
+    include partials/footer.pug

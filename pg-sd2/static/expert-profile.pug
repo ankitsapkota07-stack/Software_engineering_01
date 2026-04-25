@@ -1,0 +1,53 @@
+doctype html
+html
+  head
+    title= expert.username + " Expert Profile"
+    link(rel="stylesheet", href="/styles.css")
+
+  body
+    - var page = 'experts'
+    include partials/header.pug
+
+    .profile-page
+      .profile-container
+        .profile-card
+          .profile-top
+            .profile-left
+              .profile-avatar
+                = expert.username ? expert.username.charAt(0).toUpperCase() : "E"
+
+            .profile-right
+              h1.profile-name= expert.full_name || expert.username
+              p.profile-location= expert.location || "Unknown location"
+
+              .profile-meta
+                .meta-item
+                  span.meta-label Role
+                  span.meta-value Alteration Expert
+                .meta-item
+                  span.meta-label Rating
+                  span.meta-value ⭐ #{Number(expert.rating || 0).toFixed(1)}
+
+        .profile-main-grid
+          aside.profile-sidebar
+            .info-card
+              h3.card-heading Skills
+              p= expert.skills || "No skills added yet."
+
+            .info-card
+              h3.card-heading Services Offered
+              p= expert.service_description || "No service description added yet."
+
+            if currentUser && currentUser.role === 'community'
+              .info-card
+                h3.card-heading Request Repair
+                form(action=`/experts/${expert.id}/request` method="POST")
+                  textarea(name="message" placeholder="Describe what repair or alteration you need" required)
+                  button.btn.btn-primary(type="submit") Send Repair Request
+
+          main.profile-content
+            .content-card
+              h2.section-title About This Expert
+              p.about-text= expert.bio || "This expert has not added a bio yet."
+
+    include partials/footer.pug

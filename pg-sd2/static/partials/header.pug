@@ -5,16 +5,33 @@ header.site-header
     nav.nav
       ul
         li
-          a(href="/") Home
-        li
-          a(href="/items" class=(page === 'items' ? 'active' : '')) Browse Items
+          a(href="/" class=(page === 'home' ? 'active' : '')) Home
+
         if currentUser
-          li
-            a(href=`/users/${currentUser.id}` class=(page === 'profile' ? 'active' : '')) My Profile
-          li
-            a.add-item-btn(href="/items/new") + Add Item
+          if currentUser.role === 'community'
+            li
+              a(href="/items" class=(page === 'items' ? 'active' : '')) Browse Items
+            li
+              a(href="/requests" class=(page === 'requests' ? 'active' : '')) My Requests
+            li
+              a(href=`/users/${currentUser.id}` class=(page === 'profile' ? 'active' : '')) My Profile
+            li
+              a.add-item-btn(href="/items/new") + Add Item
+
+          if currentUser.role === 'expert'
+            li
+              a(href="/experts" class=(page === 'experts' ? 'active' : '')) Experts
+            li
+              a(href="/requests" class=(page === 'requests' ? 'active' : '')) Repair Requests
+            li
+              a(href=`/users/${currentUser.id}` class=(page === 'profile' ? 'active' : '')) My Profile
+
           li
             a.login-btn(href="/logout") Logout
         else
+          li
+            a(href="/items" class=(page === 'items' ? 'active' : '')) Browse Items
+          li
+            a(href="/experts" class=(page === 'experts' ? 'active' : '')) Find Experts
           li
             a.login-btn(href="/login") Login

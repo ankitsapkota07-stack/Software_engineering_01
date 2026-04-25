@@ -55,6 +55,22 @@ function requireLogin(req, res, next) {
   next();
 }
 
+// Community users can add exchange/reuse items
+function requireCommunity(req, res, next) {
+  if (!req.session.user || req.session.user.role !== "community") {
+    return res.status(403).send("Community users only");
+  }
+  next();
+}
+
+// Experts can access expert-only pages
+function requireExpert(req, res, next) {
+  if (!req.session.user || req.session.user.role !== "expert") {
+    return res.status(403).send("Alteration experts only");
+  }
+  next();
+}
+
 // SHOW PAGES
 app.get("/", (req, res) => {
   res.render("index");
@@ -80,16 +96,40 @@ app.get("/logout", (req, res) => {
 
 // REGISTER
 app.post("/register", async (req, res) => {
-  const { username, email, password } = req.body;
+  const {
+    full_name,
+    email,
+    phone,
+    username,
+    password,
+    role,
+    skills,
+    service_description
+  } = req.body;
 
   try {
+    // Hash password before saving to DB
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Save both normal users and experts in the same users table
     await db.query(
       `INSERT INTO users 
-      (username, email, password, location, bio, member_since, rating) 
-      VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [username, email, hashedPassword, "Unknown", "New user", 2026, 0]
+      (full_name, email, phone, username, password, location, bio, member_since, rating, role, skills, service_description) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        full_name,
+        email,
+        phone,
+        username,
+        hashedPassword,
+        "Unknown",
+        "New user",
+        2026,
+        0,
+        role || "community",
+        skills || null,
+        service_description || null
+      ]
     );
 
     res.redirect("/login");
@@ -98,7 +138,6 @@ app.post("/register", async (req, res) => {
     res.status(500).send("Registration error");
   }
 });
-
 // LOGIN
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
@@ -124,6 +163,8 @@ app.post("/login", async (req, res) => {
       id: user.id,
       username: user.username,
       email: user.email,
+      role: user.role,
+      full_name: user.full_name
     };
 
     req.session.save((err) => {
@@ -231,8 +272,42 @@ app.post("/users/:id/rate", requireLogin, async (req, res) => {
   }
 });
 
+// LIST ALL EXPERTS
+app.get("/experts", async (req, res) => {
+  try {
+    const experts = await db.query(
+      "SELECT * FROM users WHERE role = 'expert'"
+    );
+
+    res.render("experts", { experts });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
+});
+
+// SINGLE EXPERT PROFILE
+app.get("/experts/:id", async (req, res) => {
+  try {
+    const rows = await db.query(
+      "SELECT * FROM users WHERE id = ? AND role = 'expert'",
+      [req.params.id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).send("Expert not found");
+    }
+
+    res.render("expert-profile", {
+      expert: rows[0]
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
+});
 // SHOW ADD ITEM FORM
-app.get("/items/new", requireLogin, async (req, res) => {
+app.get("/items/new", requireCommunity, async (req, res) => {
   try {
     const categories = await db.query("SELECT id, name FROM categories ORDER BY name");
     res.render("add_item", { categories });
@@ -241,8 +316,8 @@ app.get("/items/new", requireLogin, async (req, res) => {
     res.status(500).send("Error loading add item page");
   }
 });
-// SAVE NEW ITEM
-app.post("/items", requireLogin, upload.single("image_file"), async (req, res) => {
+
+app.post("/items", requireCommunity, upload.single("image_file"), async (req, res) => {
   const {
     title,
     category_id,
@@ -293,7 +368,6 @@ app.post("/items", requireLogin, upload.single("image_file"), async (req, res) =
     res.status(500).send("Error saving item");
   }
 });
-
 // ALL ITEMS
 app.get("/items", async (req, res) => {
   try {

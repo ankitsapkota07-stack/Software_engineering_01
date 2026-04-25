@@ -7,7 +7,11 @@ html(lang="en")
     link(rel="stylesheet", href="/styles.css")
 
   body
-    a.back-link(href="/items") ← Back to Items
+    - var page = 'items'
+    include partials/header.pug
+
+    .container
+      a.back-link(href="/items") ← Back to Items
 
     .item-container
       .item-card
@@ -51,3 +55,5 @@ html(lang="en")
                 li.tag= tag.name
           else
             p No tags added for this item.
+
+    include partials/footer.pug
