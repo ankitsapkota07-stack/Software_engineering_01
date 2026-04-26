@@ -1,32 +1,80 @@
 doctype html
-html
+html(lang="en")
   head
-    title Experts
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Alteration Experts
     link(rel="stylesheet", href="/styles.css")
 
   body
     - var page = 'experts'
     include partials/header.pug
 
-    .container(style="padding: 40px 20px;")
-      h1.page-title Alteration Experts
+    main.page-content
+      section.experts-hero
+        .container
+          .experts-hero-box
+            .experts-hero-text
+              span.hero-tag Skilled Repair & Tailoring
+              h1 Find Alteration Experts
+              p
+                | Connect with trusted repair specialists, tailors, and makers who can
+                | help restore, resize, redesign, and refresh your clothing.
 
-      if experts && experts.length
-        .items-grid
-          each expert in experts
-            .card
-              h2= expert.full_name || expert.username
+            .experts-hero-side
+              .experts-summary-card
+                h3 Why use an expert?
+                ul
+                  li Repair damaged clothes instead of throwing them away
+                  li Find specialists with tailoring and sewing skills
+                  li Request alterations and custom repair help
+                  li Support sustainable fashion in your community
+
+      section.experts-section
+        .container
+          if experts && experts.length
+            .experts-count
               p
-                strong Username:
-                |  #{expert.username}
-              p
-                strong Skills:
-                |  #{expert.skills || "Not provided"}
-              p
-                strong Services:
-                |  #{expert.service_description || "No description yet"}
-              a.btn-view(href=`/experts/${expert.id}`) View Profile
-      else
-        p No experts available yet.
+                strong #{experts.length}
+                |  expert#{experts.length === 1 ? '' : 's'} available
+
+            .experts-grid
+              each expert in experts
+                .expert-card
+                  .expert-card-top
+                    .expert-avatar
+                      if expert.profile_photo
+                        img(src=expert.profile_photo alt=expert.full_name || expert.username)
+                      else
+                        span= (expert.full_name || expert.username).charAt(0).toUpperCase()
+
+                    .expert-top-info
+                      h2.expert-name= expert.full_name || expert.username
+                      p.expert-username @#{expert.username}
+                      p.expert-location= expert.location || "Location not added"
+
+                  .expert-badges
+                    span.badge Expert
+                    if expert.rating
+                      span.badge Rating #{expert.rating}
+                    if expert.member_since
+                      span.badge Member since #{expert.member_since}
+
+                  .expert-info-block
+                    h3 Skills
+                    p= expert.skills || "No skills added yet."
+
+                  .expert-info-block
+                    h3 Services
+                    p= expert.service_description || "No service description added yet."
+
+                  .expert-card-actions
+                    a.btn.btn-primary(href=`/experts/${expert.id}`) View Profile
+                    if currentUser && currentUser.role === 'community'
+                      a.btn.btn-outline(href=`/experts/${expert.id}`) Request Repair
+          else
+            .empty-state-box
+              h2 No alteration experts found
+              p There are no registered experts yet. Please check back later.
 
     include partials/footer.pug
