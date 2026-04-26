@@ -2,47 +2,58 @@ doctype html
 html(lang="en")
   head
     meta(charset="UTF-8")
-    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title= profileUser.username + " Profile"
-    link(rel="stylesheet" href="/styles.css")
+    link(rel="stylesheet", href="/styles.css")
 
   body
     - var page = 'profile'
     - const isOwnProfile = currentUser && String(currentUser.id) === String(profileUser.id)
     - const safeRating = Number(profileUser.rating || 0).toFixed(1)
-    - const completedListings = items ? items.filter(item => item.availability_status && item.availability_status.toLowerCase() === "completed").length : 0
-    - const availableListings = items ? items.filter(item => !item.availability_status || item.availability_status.toLowerCase() === "available").length : 0
+    - const completedListings = items ? items.filter(item => item.status && item.status.toLowerCase() === "completed").length : 0
+    - const availableListings = items ? items.filter(item => !item.status || item.status.toLowerCase() === "available").length : 0
 
     include partials/header.pug
 
     .profile-page
       .profile-container
 
+        // Top hero card
         .profile-card
           .profile-top
             .profile-left
-              .profile-avatar
-                = profileUser.username ? profileUser.username.charAt(0).toUpperCase() : "U"
+              if profileUser.profile_image
+                img.profile-avatar-image(src=profileUser.profile_image alt=profileUser.username)
+              else
+                .profile-avatar
+                  = profileUser.username ? profileUser.username.charAt(0).toUpperCase() : "U"
 
               if isOwnProfile
-                a.btn.btn-outline(href="/items/new") + Add Item
+                a.btn.btn-outline(href="/profile/edit") Edit Profile
 
             .profile-right
-              .profile-header-row
-                h1.profile-name= profileUser.username
-
+              h1.profile-name= profileUser.username
               p.profile-location= profileUser.location || "Unknown location"
+
+              .profile-role-badge
+                if profileUser.role === "expert"
+                  span.role-pill.expert Alteration Expert
+                else
+                  span.role-pill.community Community User
 
               .profile-meta
                 .meta-item
                   span.meta-label Member Since
                   span.meta-value= profileUser.member_since || "N/A"
+
                 .meta-item
                   span.meta-label Rating
                   span.meta-value ⭐ #{safeRating}
+
                 .meta-item
                   span.meta-label Total Listings
                   span.meta-value= totalListings
+
                 .meta-item
                   span.meta-label Completed
                   span.meta-value= completedListings
@@ -53,7 +64,6 @@ html(lang="en")
                   a.btn.btn-outline(href="/") Back Home
                 else if currentUser
                   a.btn.btn-primary(href="/") Back Home
-                  a.btn.btn-outline(href=`/items`) Browse Items
                 else
                   a.btn.btn-outline(href="/login") Login to interact
 
@@ -79,17 +89,17 @@ html(lang="en")
               h3.card-heading Quick Info
               ul.info-list
                 li
-                  strong Location:
-                  |  #{profileUser.location || "Unknown"}
+                  strong Full Name:
+                  |  #{profileUser.full_name || "Not provided"}
                 li
-                  strong Bio:
-                  |  #{profileUser.bio || "This user has not added a bio yet."}
+                  strong Email:
+                  |  #{profileUser.email || "Not provided"}
                 li
-                  strong Total Listings:
-                  |  #{totalListings}
+                  strong Phone:
+                  |  #{profileUser.phone || "Not provided"}
                 li
-                  strong Rating:
-                  |  #{safeRating}
+                  strong Role:
+                  |  #{profileUser.role || "community"}
 
             if currentUser && !isOwnProfile
               .info-card
@@ -118,7 +128,7 @@ html(lang="en")
                   each item in items
                     .listing-card
                       if item.image_url
-                        img.item-card-image(src=item.image_url alt=item.title)
+                        img.listing-image-real(src=item.image_url alt=item.title)
                       else
                         .listing-image
                           span= item.title ? item.title.charAt(0).toUpperCase() : "I"
@@ -126,7 +136,7 @@ html(lang="en")
                       .listing-details
                         h3.listing-title= item.title || "Untitled Item"
                         p.listing-category Category: #{item.category_name || "Uncategorised"}
-                        p.listing-status Status: #{item.availability_status || "Available"}
+                        p.listing-status Status: #{item.status || item.availability_status || "Available"}
 
                         if item.description
                           p.listing-description= item.description.length > 90 ? item.description.substring(0, 90) + "..." : item.description
@@ -137,11 +147,5 @@ html(lang="en")
               else
                 .empty-box
                   p No items listed yet.
-
-            .content-card
-              h2.section-title Reviews
-              .review-box
-                p.review-stars ⭐ ⭐ ⭐ ⭐ ☆
-                p Review system can be expanded later with written feedback.
 
     include partials/footer.pug

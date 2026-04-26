@@ -201,6 +201,7 @@ app.post("/register", async (req, res) => {
     res.status(500).send("Registration error");
   }
 });
+
 // LOGIN
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
@@ -314,6 +315,77 @@ app.get("/users/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Database error");
+  }
+});
+
+// =====================================
+// EDIT PROFILE PAGE
+// =====================================
+
+// Show edit profile form for logged in user
+app.get("/profile/edit", requireLogin, async (req, res) => {
+  try {
+    const rows = await db.query(
+      "SELECT * FROM users WHERE id = ?",
+      [req.session.user.id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).send("User not found");
+    }
+
+    res.render("edit-profile", {
+      profileUser: rows[0]
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error loading edit profile page");
+  }
+});
+
+// Save profile changes
+app.post("/profile/edit", requireLogin, upload.single("profile_image"), async (req, res) => {
+  const { location, bio } = req.body;
+
+  try {
+    // Get current user first
+    const rows = await db.query(
+      "SELECT * FROM users WHERE id = ?",
+      [req.session.user.id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).send("User not found");
+    }
+
+    const user = rows[0];
+
+    // If user uploaded a new image, use it
+    // otherwise keep old image
+    const finalProfileImage = req.file
+      ? `/uploads/${req.file.filename}`
+      : user.profile_image;
+
+    await db.query(
+      `UPDATE users
+       SET location = ?, bio = ?, profile_image = ?
+       WHERE id = ?`,
+      [
+        location || "Unknown",
+        bio || "New user",
+        finalProfileImage,
+        req.session.user.id
+      ]
+    );
+
+    // Optional: update session values too
+    req.session.user.location = location || "Unknown";
+    req.session.user.profile_image = finalProfileImage;
+
+    res.redirect(`/users/${req.session.user.id}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error updating profile");
   }
 });
 
@@ -674,20 +746,92 @@ app.post("/items", requireCommunity, upload.single("image_file"), async (req, re
     res.status(500).send("Error saving item");
   }
 });
-// ALL ITEMS
+
+// ALL ITEMS + SEARCH
 app.get("/items", async (req, res) => {
   try {
-    const items = await db.query(
-      `SELECT items.*, users.username, categories.name AS category_name
-       FROM items
-       JOIN users ON items.user_id = users.id
-       JOIN categories ON items.category_id = categories.id`
-    );
+    const searchQuery = (req.query.q || "").trim();
 
-    res.render("items", { items });
+    let sql = `
+      SELECT items.*, users.username, categories.name AS category_name
+      FROM items
+      JOIN users ON items.user_id = users.id
+      JOIN categories ON items.category_id = categories.id
+    `;
+
+    const params = [];
+
+    // Case-insensitive multi-word search
+    // Example:
+    // "denim jacket" will match items containing both words
+    if (searchQuery) {
+      const tokens = searchQuery
+        .toLowerCase()
+        .split(/\s+/)
+        .filter(Boolean);
+
+      const tokenClauses = tokens.map(() => `
+        (
+          LOWER(items.title) LIKE ?
+          OR LOWER(COALESCE(items.description, '')) LIKE ?
+          OR LOWER(categories.name) LIKE ?
+          OR LOWER(users.username) LIKE ?
+          OR LOWER(COALESCE(items.city, '')) LIKE ?
+          OR LOWER(COALESCE(items.condition, '')) LIKE ?
+        )
+      `).join(" AND ");
+
+      sql += ` WHERE ${tokenClauses}`;
+
+      tokens.forEach((token) => {
+        const like = `%${token}%`;
+        params.push(like, like, like, like, like, like);
+      });
+    }
+
+    sql += ` ORDER BY items.id DESC`;
+
+    const items = await db.query(sql, params);
+
+    res.render("items", {
+      items,
+      searchQuery
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send("Database error");
+  }
+});
+
+// ITEM SEARCH SUGGESTIONS
+app.get("/items/suggestions", async (req, res) => {
+  try {
+    const q = (req.query.q || "").trim().toLowerCase();
+
+    if (!q) {
+      return res.json([]);
+    }
+
+    const suggestions = await db.query(
+      `
+      SELECT DISTINCT items.title
+      FROM items
+      WHERE LOWER(items.title) LIKE ?
+      ORDER BY
+        CASE
+          WHEN LOWER(items.title) LIKE ? THEN 0
+          ELSE 1
+        END,
+        items.title ASC
+      LIMIT 8
+      `,
+      [`%${q}%`, `${q}%`]
+    );
+
+    res.json(suggestions.map(item => item.title));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json([]);
   }
 });
 

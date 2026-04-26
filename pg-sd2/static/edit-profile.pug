@@ -1,0 +1,41 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Edit Profile
+    link(rel="stylesheet", href="/styles.css")
+
+  body
+    - var page = 'profile'
+    include partials/header.pug
+
+    .edit-profile-page
+      .edit-profile-container
+        .edit-profile-card
+          h1 Edit Profile
+          p.edit-profile-subtitle Update your location, bio and profile photo.
+
+          form.edit-profile-form(action="/profile/edit" method="POST" enctype="multipart/form-data")
+            .form-group
+              label(for="location") Location
+              input(type="text" name="location" id="location" value=profileUser.location placeholder="Enter your location")
+
+            .form-group
+              label(for="bio") Bio
+              textarea(name="bio" id="bio" rows="6" placeholder="Write something about yourself")= profileUser.bio
+
+            .form-group
+              label(for="profile_image") Upload Profile Photo
+              input(type="file" name="profile_image" id="profile_image" accept="image/*")
+
+            if profileUser.profile_image
+              .current-profile-preview
+                p Current Profile Photo
+                img.current-profile-image(src=profileUser.profile_image alt="Current Profile Photo")
+
+            .edit-profile-actions
+              button.btn.btn-primary(type="submit") Save Changes
+              a.btn.btn-outline(href=`/users/${profileUser.id}`) Cancel
+
+    include partials/footer.pug

@@ -22,16 +22,35 @@ html(lang="en")
 
           .items-hero-actions
             a.btn.outline(href="/") ← Back to Home
-            if currentUser
+            if currentUser && currentUser.role === 'community'
               a.btn.primary(href="/items/new") + Add New Item
 
     section.items-section
       .container
+        .items-toolbar
+          form.items-search-form(action="/items" method="GET" autocomplete="off")
+            .search-input-wrap
+              input#itemSearch.search-input(
+                type="text"
+                name="q"
+                placeholder="Search by title, category, owner, city, condition..."
+                value=searchQuery || ""
+              )
+              button.btn.btn-primary(type="submit") Search
+              ul#searchSuggestions.search-suggestions
+
+          if searchQuery
+            .search-result-note
+              p
+                | Showing results for 
+                strong "#{searchQuery}"
+              a.btn.btn-outline(href="/items") Clear Search
+
         if items && items.length
           .items-summary
             p
               strong #{items.length}
-              |  item#{items.length === 1 ? '' : 's'} available
+              |  item#{items.length === 1 ? '' : 's'} found
 
           .items-grid.advanced-items-grid
             each item in items
@@ -65,12 +84,9 @@ html(lang="en")
                       a.btn-outline(href=`/users/${item.user_id}`) View Owner
         else
           .empty-state-box
-            h2 No items available yet
-            p Be the first to add an item to the community listings.
-            if currentUser
-              a.btn.primary(href="/items/new") Add First Item
-            else
-              a.btn.primary(href="/login") Login to Add Item
+            h2 No matching items found
+            p Try another keyword like jacket, denim, dress, repair, or owner name.
+            a.btn.btn-outline(href="/items") Show All Items
 
     section.section-reuse-banner
       .container
@@ -81,3 +97,65 @@ html(lang="en")
             | more compassionate community.
 
     include partials/footer.pug
+
+    script.
+      document.addEventListener("DOMContentLoaded", function () {
+        const input = document.getElementById("itemSearch");
+        const suggestionBox = document.getElementById("searchSuggestions");
+
+        if (!input || !suggestionBox) return;
+
+        let debounceTimer;
+
+        input.addEventListener("input", function () {
+          const value = input.value.trim();
+
+          clearTimeout(debounceTimer);
+
+          if (!value) {
+            suggestionBox.innerHTML = "";
+            suggestionBox.style.display = "none";
+            return;
+          }
+
+          debounceTimer = setTimeout(async () => {
+            try {
+              const res = await fetch(`/items/suggestions?q=${encodeURIComponent(value)}`);
+              const suggestions = await res.json();
+
+              suggestionBox.innerHTML = "";
+
+              if (!suggestions.length) {
+                suggestionBox.style.display = "none";
+                return;
+              }
+
+              suggestions.forEach((text) => {
+                const li = document.createElement("li");
+                li.textContent = text;
+                li.className = "search-suggestion-item";
+
+                li.addEventListener("click", function () {
+                  input.value = text;
+                  suggestionBox.innerHTML = "";
+                  suggestionBox.style.display = "none";
+                  input.form.submit();
+                });
+
+                suggestionBox.appendChild(li);
+              });
+
+              suggestionBox.style.display = "block";
+            } catch (err) {
+              console.error(err);
+              suggestionBox.style.display = "none";
+            }
+          }, 200);
+        });
+
+        document.addEventListener("click", function (e) {
+          if (!suggestionBox.contains(e.target) && e.target !== input) {
+            suggestionBox.style.display = "none";
+          }
+        });
+      });
