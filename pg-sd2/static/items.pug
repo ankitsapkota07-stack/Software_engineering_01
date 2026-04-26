@@ -63,7 +63,7 @@ html(lang="en")
                 .item-card-body
                   .item-card-top
                     h2.item-card-title= item.title
-                    span.item-status-badge= item.availability_status || "Available"
+                    span(class=`item-status-badge ${(item.availability_status || '').toLowerCase() === 'not available' ? 'unavailable' : ''}`)= item.availability_status || "Available"
 
                   p.item-card-category= item.category_name || "Uncategorised"
 

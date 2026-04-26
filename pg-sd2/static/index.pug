@@ -3,186 +3,175 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    meta(name="description" content="Circular Fashion clothing repair, alterations and upcycling services.")
+    meta(name="description", content="Circular Fashion clothing repair, alterations and upcycling services.")
     title Circular Fashion
     link(rel="stylesheet", href="/styles.css")
 
   body
-    header.site-header
-      .container.header-inner
-        a.logo(href="/") Circular Fashion
+    - var page = 'home'
+    include partials/header.pug
 
-        nav.nav
-          ul
-            li
-              a(href="/") Home
-
+    main.page-content
+      section.hero
+        .container.hero-grid
+          .hero-text
             if currentUser
-              li
-                a(href="/items") Browse Items
-              li
-                a(href=`/users/${currentUser.id}`) My Profile
-              li
-                a.add-item-btn(href="/items/new") + Add Item
-              li
-                a.login-btn(href="/logout") Logout
+              span.hero-tag Welcome back
+              h1 Give clothes a second life
+              p.hero-lead
+                | Hi #{currentUser.username}, manage your listings, connect with the community,
+                | and keep fashion in circulation.
+              .hero-buttons
+                a.btn.primary(href="/items") Browse Items
+                if currentUser.role === 'community'
+                  a.btn.secondary(href="/items/new") Add Item
+                  a.btn.outline(href="/experts") Find Experts
+                else if currentUser.role === 'expert'
+                  a.btn.secondary(href="/experts") View Experts
+                  a.btn.outline(href="/requests") View Requests
+                a.btn.outline(href=`/users/${currentUser.id}`) My Profile
+
+              .quick-stats
+                .stat-card
+                  h3 Community
+                  p Share, swap and support sustainable fashion
+                .stat-card
+                  h3 Your Space
+                  p Manage your profile, items and ratings
+                .stat-card
+                  h3 Next Step
+                  p Add a listing, browse items or connect with others
+
             else
-              li
-                a(href="#about") About
-              li
-                a(href="#services") Services
-              li
-                a(href="#process") How It Works
-              li
-                a(href="#contact") Contact
-              li
-                a.login-btn(href="/login") Login
+              span.hero-tag Sustainable community exchange
+              h1 Re-make, Mend and Reuse
+              p.hero-lead
+                | Give your clothes a second life. Repair, refresh, swap and reinvent the pieces
+                | you love while reducing waste and supporting circular fashion.
+              .hero-buttons
+                a.btn.primary(href="/items") Browse Items
+                a.btn.secondary(href="/experts") Find Experts
+                a.btn.outline(href="/register") Join Now
 
-    section.hero
-      .container.hero-grid
-        .hero-text
-          if currentUser
-            span.hero-tag Welcome back
-            h1 Give clothes a second life
-            p.hero-lead
-              | Hi #{currentUser.username}, manage your listings, connect with the community,
-              | and keep fashion in circulation.
-            .hero-buttons
-              a.btn.primary(href="/items") Browse Items
+          .hero-panel
+            .hero-card
+              h3 Why Circular Fashion?
+              ul.hero-list
+                li Reduce textile waste
+                li Extend garment life
+                li Save money through reuse
+                li Support a sustainable community
+
+      if currentUser
+        section.member-dashboard
+          .container
+            h2.section-title Your Dashboard
+            .dashboard-grid
+              a.dashboard-card(href="/items")
+                h3 Browse Listings
+                p Explore available clothing, accessories and community items.
+
               if currentUser.role === 'community'
-                a.btn.secondary(href="/items/new") + Add Item
+                a.dashboard-card(href="/items/new")
+                  h3 Add a New Item
+                  p Create a listing and share something useful with others.
+
+                a.dashboard-card(href="/experts")
+                  h3 Find Experts
+                  p Connect with alteration experts for repair and tailoring help.
+
               if currentUser.role === 'expert'
-                a.btn.secondary(href="/experts") View Experts
-              a.btn.outline(href=`/users/${currentUser.id}`) My Profile
+                a.dashboard-card(href="/experts")
+                  h3 Expert Directory
+                  p View other expert profiles and expand your repair network.
 
-            .quick-stats
-              .stat-card
-                h3 Community
-                p Share, swap and support sustainable fashion
-              .stat-card
-                h3 Your Space
-                p Manage your profile, items and ratings
-              .stat-card
-                h3 Next Step
-                p Add a listing or explore available items
+                a.dashboard-card(href="/requests")
+                  h3 View Requests
+                  p Check incoming repair requests and manage conversations.
 
-          else
-            span.hero-tag Sustainable community exchange
-            h1 Re-make, Mend and Reuse
-            p.hero-lead
-              | Give your clothes a second life. Repair, refresh, swap and reinvent the pieces
-              | you love while reducing waste and supporting circular fashion.
+              a.dashboard-card(href=`/users/${currentUser.id}`)
+                h3 View Your Profile
+                p Check your profile, listings and current rating.
+
+              a.dashboard-card(href="/logout")
+                h3 Logout
+                p Sign out securely when you are finished.
+
+      else
+        section#about.about-section
+          .container
+            h2.section-title Why Choose Circular Fashion?
+            p.section-text
+              | Circular fashion keeps clothing in use for longer through repair, reuse,
+              | exchange and upcycling. It helps reduce waste while letting people keep the
+              | clothes they love.
+
+            .feature-grid
+              .feature-card
+                span.feature-icon 🌍
+                h3 Less Waste
+                p Keep textiles out of landfill and reduce environmental impact.
+
+              .feature-card
+                span.feature-icon ♻️
+                h3 Reuse & Repair
+                p Encourage reuse, mending and thoughtful consumption.
+
+              .feature-card
+                span.feature-icon 💷
+                h3 Save Money
+                p Extend the life of your wardrobe without buying new items.
+
+              .feature-card
+                span.feature-icon ✂️
+                h3 Creative Upcycling
+                p Refresh old pieces with alterations and new ideas.
+
+        section#services.services-section
+          .container
+            h2.section-title Our Services
+            .service-grid
+              .service-card
+                .icon 🧵
+                h3 Repair
+                p Fix tears, replace zips and restore well-loved garments.
+
+              .service-card
+                .icon ♻️
+                h3 Upcycle
+                p Turn unused clothing into refreshed and unique pieces.
+
+              .service-card
+                .icon ✂️
+                h3 Alterations
+                p Improve fit, comfort and style with simple changes.
+
+        section#process.process-section
+          .container
+            h2.section-title How It Works
+            .steps
+              .step
+                .icon 📅
+                h3 1. Browse or Book
+                p Start by exploring items or choosing a service.
+
+              .step
+                .icon 📦
+                h3 2. Share or Repair
+                p Exchange clothing, add listings or request support.
+
+              .step
+                .icon ✨
+                h3 3. Keep It in Use
+                p Enjoy clothing longer and support a sustainable cycle.
+
+        section.cta-section
+          .container
+            h2 Ready to join the community?
+            p Browse items, find experts, and start sharing, repairing and reusing today.
             .hero-buttons
               a.btn.primary(href="/items") Browse Items
               a.btn.secondary(href="/experts") Find Experts
-              a.btn.outline(href="/register") Join Now
+              a.btn.outline(href="/register") Register
 
-        .hero-panel
-          .hero-card
-            h3 Why Circular Fashion?
-            ul.hero-list
-              li Reduce textile waste
-              li Extend garment life
-              li Save money through reuse
-              li Support a sustainable community
-
-    if currentUser
-      section.member-dashboard
-        .container
-          h2.section-title Your Dashboard
-          .dashboard-grid
-            a.dashboard-card(href="/items")
-              h3 Browse Listings
-              p Explore available clothing, accessories and community items.
-
-            a.dashboard-card(href="/items/new")
-              h3 Add a New Item
-              p Create a listing and share something useful with others.
-
-            a.dashboard-card(href=`/users/${currentUser.id}`)
-              h3 View Your Profile
-              p Check your profile, listings and current rating.
-
-            a.dashboard-card(href="/logout")
-              h3 Logout
-              p Sign out securely when you are finished.
-
-    else
-      section#about.about-section
-        .container
-          h2.section-title Why Choose Circular Fashion?
-          p.section-text
-            | Circular fashion keeps clothing in use for longer through repair, reuse,
-            | exchange and upcycling. It helps reduce waste while letting people keep the
-            | clothes they love.
-
-          .feature-grid
-            .feature-card
-              span.feature-icon 🌍
-              h3 Less Waste
-              p Keep textiles out of landfill and reduce environmental impact.
-
-            .feature-card
-              span.feature-icon ♻️
-              h3 Reuse & Repair
-              p Encourage reuse, mending and thoughtful consumption.
-
-            .feature-card
-              span.feature-icon 💷
-              h3 Save Money
-              p Extend the life of your wardrobe without buying new items.
-
-            .feature-card
-              span.feature-icon ✂️
-              h3 Creative Upcycling
-              p Refresh old pieces with alterations and new ideas.
-
-      section#services.services-section
-        .container
-          h2.section-title Our Services
-          .service-grid
-            .service-card
-              .icon 🧵
-              h3 Repair
-              p Fix tears, replace zips and restore well-loved garments.
-
-            .service-card
-              .icon ♻️
-              h3 Upcycle
-              p Turn unused clothing into refreshed and unique pieces.
-
-            .service-card
-              .icon ✂️
-              h3 Alterations
-              p Improve fit, comfort and style with simple changes.
-
-      section#process.process-section
-        .container
-          h2.section-title How It Works
-          .steps
-            .step
-              .icon 📅
-              h3 1. Browse or Book
-              p Start by exploring items or choosing a service.
-
-            .step
-              .icon 📦
-              h3 2. Share or Repair
-              p Exchange clothing, add listings or request support.
-
-            .step
-              .icon ✨
-              h3 3. Keep It in Use
-              p Enjoy clothing longer and support a sustainable cycle.
-
-      section.cta-section
-        .container
-          h2 Ready to join the community?
-          p Start sharing, repairing and reusing today.
-          a.btn.primary(href="/login") Login to Begin
-
-    footer#contact.site-footer
-      .container
-        p © 2026 Circular Fashion
-        p Email: info@circularfashion.co.uk
-        p Repair • Upcycle • Alterations
+    include partials/footer.pug

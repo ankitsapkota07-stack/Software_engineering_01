@@ -2272,3 +2272,18 @@ body {
   border-color: #2f6d4f;
   box-shadow: 0 0 0 3px rgba(47, 109, 79, 0.12);
 }
+/* for available or not available button */
+.item-status-badge {
+  background: #edf5ef;
+  color: #2f6d4f;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.item-status-badge.unavailable {
+  background: #fef2f2;
+  color: #b91c1c;
+}

@@ -538,6 +538,14 @@ app.post("/items/:id/request", requireCommunity, async (req, res) => {
 
     const item = itemRows[0];
 
+    // Do not allow requests for unavailable items
+    if (
+      item.availability_status &&
+      item.availability_status.toLowerCase() !== "available"
+    ) {
+      return res.status(400).send("This item is no longer available");
+    }
+
     await db.query(
       `INSERT INTO requests (request_type, sender_id, recipient_id, item_id, message)
        VALUES (?, ?, ?, ?, ?)`,
@@ -620,28 +628,40 @@ app.post("/requests/:id/status", requireLogin, async (req, res) => {
 
     const request = rows[0];
 
-    // Only the person receiving the request can update it
+    // Only the recipient can update the request
     if (request.recipient_id !== req.session.user.id) {
       return res.status(403).send("Not allowed");
     }
 
-    // Only allow valid status updates
+    // Allow only valid statuses
     if (!["accepted", "rejected", "completed"].includes(status)) {
       return res.status(400).send("Invalid status");
     }
 
+    // Update the request status
     await db.query(
       "UPDATE requests SET status = ? WHERE id = ?",
       [status, requestId]
     );
 
     // IMPORTANT:
-    // If the request is accepted, open the chat immediately
+    // If an exchange request is accepted, mark the item as Not Available
+    if (
+      status === "accepted" &&
+      request.request_type === "exchange" &&
+      request.item_id
+    ) {
+      await db.query(
+        "UPDATE items SET availability_status = ? WHERE id = ?",
+        ["Not Available", request.item_id]
+      );
+    }
+
+    // If accepted, open chat
     if (status === "accepted") {
       return res.redirect(`/requests/${requestId}/chat`);
     }
 
-    // Otherwise go back to requests page
     res.redirect("/requests");
   } catch (err) {
     console.error(err);

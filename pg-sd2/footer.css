@@ -1,0 +1,16 @@
+/* =========================
+   FOOTER
+========================= */
+.site-footer {
+  margin-top: auto;
+  background: linear-gradient(90deg, #17251c, #1f2f24, #17251c);
+  color: #dbe4dc;
+  padding: 48px 0;
+  text-align: center;
+}
+
+.site-footer p {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  opacity: 0.95;
+}
