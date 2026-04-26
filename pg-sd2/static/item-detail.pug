@@ -10,58 +10,102 @@ html(lang="en")
     - var page = 'items'
     include partials/header.pug
 
-    .container
-      a.back-link(href="/items") ← Back to Items
+    .container.item-detail-page
+      .item-detail-topbar
+        a.back-link(href="/items") ← Back to Items
 
-    .item-container
-      .item-card
-        if item.image_url
-          img.item-detail-image(src=item.image_url alt=item.title)
-        else
-          .item-placeholder No Image Available
+      .item-detail-layout
+        .item-detail-left
+          .item-gallery-card
+            if item.image_url
+              .item-image-viewer
+                img.item-detail-image#itemPreviewImage(src=item.image_url alt=item.title)
+                button.view-full-btn#openImageModal(type="button") View Full Image
+            else
+              .item-placeholder No Image Available
 
-        h1= item.title
+        .item-detail-right
+          .item-summary-card
+            .item-summary-header
+              h1.item-detail-title= item.title
+              .item-meta
+                span.badge #{item.category_name || "Uncategorised"}
+                span.status #{item.availability_status || "Available"}
 
-        .item-meta
-          span.badge #{item.category_name || "Uncategorised"}
-          span.status #{item.availability_status || "Available"}
+            .item-info-grid
+              .info-pill
+                span.info-label Owner
+                a.owner-link(href=`/users/${item.user_id}`)= item.username || "Unknown"
 
-        .item-info
-          p
-            strong Owner:
-            |  #{item.username || "Unknown"}
+              .info-pill
+                span.info-label Size
+                span.info-value= item.size || "Not specified"
 
-          p
-            strong Size:
-            |  #{item.size || "Not specified"}
+              .info-pill
+                span.info-label City
+                span.info-value= item.city || "Not specified"
 
-          p
-            strong City:
-            |  #{item.city || "Not specified"}
+              .info-pill
+                span.info-label Condition
+                span.info-value= item.condition || "Not specified"
 
-          p
-            strong Condition:
-            |  #{item.condition || "Not specified"}
+            .item-description-card
+              h3 Description
+              p= item.description || "No description provided."
 
-        .item-description
-          h3 Description
-          p= item.description || "No description provided."
+            .item-tags
+              h3 Tags
+              if tags && tags.length
+                ul
+                  each tag in tags
+                    li.tag= tag.name
+              else
+                p No tags added for this item.
 
-        .item-tags
-          h3 Tags
-          if tags && tags.length
-            ul
-              each tag in tags
-                li.tag= tag.name
-          else
-            p No tags added for this item.
+            if currentUser && currentUser.role === 'community' && currentUser.id !== item.user_id
+              .request-card
+                h2.section-title Request This Item
+                p.request-card-text Send a message to the owner to request this item.
+                form(action=`/items/${item.id}/request` method="POST")
+                  textarea(name="message" placeholder="Write a short message to request this item" required)
+                  button.btn.btn-primary(type="submit") Send Request
 
-        //- Logic to allow community members to request an item they don't own
-        if currentUser && currentUser.role === 'community' && currentUser.id !== item.user_id
-          .content-card(style="margin-top: 20px;")
-            h2.section-title Request This Item
-            form(action=`/items/${item.id}/request` method="POST")
-              textarea(name="message" placeholder="Write a short message to request this item" required)
-              button.btn.btn-primary(type="submit") Send Request
+    if item.image_url
+      .image-modal#imageModal
+        button.image-modal-close#closeImageModal(type="button") ×
+        img.image-modal-content(src=item.image_url alt=item.title)
 
     include partials/footer.pug
+
+    if item.image_url
+      script.
+        document.addEventListener("DOMContentLoaded", function () {
+          const openBtn = document.getElementById("openImageModal");
+          const closeBtn = document.getElementById("closeImageModal");
+          const modal = document.getElementById("imageModal");
+          const previewImage = document.getElementById("itemPreviewImage");
+
+          if (!openBtn || !closeBtn || !modal || !previewImage) return;
+
+          function openModal() {
+            modal.classList.add("active");
+            document.body.style.overflow = "hidden";
+          }
+
+          function closeModal() {
+            modal.classList.remove("active");
+            document.body.style.overflow = "";
+          }
+
+          openBtn.addEventListener("click", openModal);
+          previewImage.addEventListener("click", openModal);
+          closeBtn.addEventListener("click", closeModal);
+
+          modal.addEventListener("click", function (e) {
+            if (e.target === modal) closeModal();
+          });
+
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") closeModal();
+          });
+        });
