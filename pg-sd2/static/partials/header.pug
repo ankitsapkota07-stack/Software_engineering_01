@@ -12,6 +12,8 @@ header.site-header
             li
               a(href="/items" class=(page === 'items' ? 'active' : '')) Browse Items
             li
+              a(href="/experts" class=(page === 'experts' ? 'active' : '')) Find Experts
+            li
               a(href="/requests" class=(page === 'requests' ? 'active' : '')) My Requests
             li
               a(href=`/users/${currentUser.id}` class=(page === 'profile' ? 'active' : '')) My Profile
@@ -28,10 +30,21 @@ header.site-header
 
           li
             a.login-btn(href="/logout") Logout
+
         else
           li
             a(href="/items" class=(page === 'items' ? 'active' : '')) Browse Items
           li
             a(href="/experts" class=(page === 'experts' ? 'active' : '')) Find Experts
           li
+            a(href="/#about") About
+          li
+            a(href="/#services") Services
+          li
+            a(href="/#process") How It Works
+          li
+            a(href="/#contact") Contact
+          li
             a.login-btn(href="/login") Login
+          li
+            a.btn-outline(href="/register") Register

@@ -49,7 +49,10 @@ html(lang="en")
               | and keep fashion in circulation.
             .hero-buttons
               a.btn.primary(href="/items") Browse Items
-              a.btn.secondary(href="/items/new") Add Item
+              if currentUser.role === 'community'
+                a.btn.secondary(href="/items/new") + Add Item
+              if currentUser.role === 'expert'
+                a.btn.secondary(href="/experts") View Experts
               a.btn.outline(href=`/users/${currentUser.id}`) My Profile
 
             .quick-stats
@@ -70,8 +73,9 @@ html(lang="en")
               | Give your clothes a second life. Repair, refresh, swap and reinvent the pieces
               | you love while reducing waste and supporting circular fashion.
             .hero-buttons
-              a.btn.primary(href="/login") Get Started
-              a.btn.outline(href="#about") Learn More
+              a.btn.primary(href="/items") Browse Items
+              a.btn.secondary(href="/experts") Find Experts
+              a.btn.outline(href="/register") Join Now
 
         .hero-panel
           .hero-card

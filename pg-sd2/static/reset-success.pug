@@ -1,0 +1,21 @@
+doctype html
+html
+  head
+    title Password Reset Successful
+    link(rel="stylesheet", href="/styles.css")
+
+  body
+    - var page = ''
+    include partials/header.pug
+
+    .edit-profile-page
+      .edit-profile-container
+        .edit-profile-card
+          h1 Password Reset Successful
+          p.edit-profile-subtitle Your password has been updated successfully.
+
+          .edit-profile-actions
+            a.btn.btn-primary(href="/login") Login Now
+            a.btn.btn-outline(href="/") Back Home
+
+    include partials/footer.pug

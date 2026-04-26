@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const fs = require("fs");
 const multer = require("multer");
 const bcrypt = require("bcrypt");
@@ -244,7 +245,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// FORGOT PASSWORD
+// FORGOT PASSWORD - generate reset token
 app.post("/forgot-password", async (req, res) => {
   const { email } = req.body;
 
@@ -254,14 +255,92 @@ app.post("/forgot-password", async (req, res) => {
       [email]
     );
 
-    if (rows.length > 0) {
-      res.send("Password reset link not implemented yet");
-    } else {
-      res.send("Email not found");
+    // Do not reveal too much information in real systems
+    if (rows.length === 0) {
+      return res.send("If that email exists, a reset link has been generated.");
     }
+
+    const user = rows[0];
+
+    // Generate secure random token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    // Set token expiry: 15 minutes from now
+    const expiry = new Date(Date.now() + 15 * 60 * 1000);
+
+    await db.query(
+      "UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE id = ?",
+      [resetToken, expiry, user.id]
+    );
+
+    const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+
+    // For coursework/demo: print link in terminal
+    console.log("Password reset link:", resetLink);
+
+    // For demo: also show link in browser
+    res.send(`
+      <h2>Reset link generated</h2>
+      <p>For demo purposes, use this link:</p>
+      <a href="${resetLink}">${resetLink}</a>
+    `);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error");
+    res.status(500).send("Error generating reset link");
+  }
+});
+
+// SHOW RESET PASSWORD PAGE
+app.get("/reset-password/:token", async (req, res) => {
+  const { token } = req.params;
+
+  try {
+    const rows = await db.query(
+      "SELECT * FROM users WHERE reset_token = ? AND reset_token_expiry > NOW()",
+      [token]
+    );
+
+    if (rows.length === 0) {
+      return res.status(400).send("Invalid or expired reset link");
+    }
+
+    res.render("reset-password", { token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error loading reset page");
+  }
+});
+
+// SAVE NEW PASSWORD
+app.post("/reset-password/:token", async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  try {
+    const rows = await db.query(
+      "SELECT * FROM users WHERE reset_token = ? AND reset_token_expiry > NOW()",
+      [token]
+    );
+
+    if (rows.length === 0) {
+      return res.status(400).send("Invalid or expired reset link");
+    }
+
+    const user = rows[0];
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await db.query(
+      `UPDATE users 
+       SET password = ?, reset_token = NULL, reset_token_expiry = NULL 
+       WHERE id = ?`,
+      [hashedPassword, user.id]
+    );
+
+    res.render("reset-success");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error resetting password");
   }
 });
 
