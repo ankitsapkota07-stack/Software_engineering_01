@@ -2243,3 +2243,32 @@ body {
     width: 100%;
   }
 }
+.request-card-text {
+  margin-bottom: 14px;
+  color: #6b7280;
+}
+
+.content-card form {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.content-card textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  resize: vertical;
+  margin-bottom: 14px;
+  font: inherit;
+}
+
+.content-card textarea:focus {
+  outline: none;
+  border-color: #2f6d4f;
+  box-shadow: 0 0 0 3px rgba(47, 109, 79, 0.12);
+}
