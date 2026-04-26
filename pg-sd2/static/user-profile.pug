@@ -10,142 +10,142 @@ html(lang="en")
     - var page = 'profile'
     - const isOwnProfile = currentUser && String(currentUser.id) === String(profileUser.id)
     - const safeRating = Number(profileUser.rating || 0).toFixed(1)
-    - const completedListings = items ? items.filter(item => item.status && item.status.toLowerCase() === "completed").length : 0
-    - const availableListings = items ? items.filter(item => !item.status || item.status.toLowerCase() === "available").length : 0
+    - const completedListings = items ? items.filter(item => item.availability_status && item.availability_status.toLowerCase() === "completed").length : 0
+    - const availableListings = items ? items.filter(item => !item.availability_status || item.availability_status.toLowerCase() === "available").length : 0
 
     include partials/header.pug
 
-    .profile-page
-      .profile-container
+    main.page-content
+      .profile-page
+        .profile-container
 
-        // Top hero card
-        .profile-card
-          .profile-top
-            .profile-left
-              if profileUser.profile_image
-                img.profile-avatar-image(src=profileUser.profile_image alt=profileUser.username)
-              else
-                .profile-avatar
-                  = profileUser.username ? profileUser.username.charAt(0).toUpperCase() : "U"
-
-              if isOwnProfile
-                a.btn.btn-outline(href="/profile/edit") Edit Profile
-
-            .profile-right
-              h1.profile-name= profileUser.username
-              p.profile-location= profileUser.location || "Unknown location"
-
-              .profile-role-badge
-                if profileUser.role === "expert"
-                  span.role-pill.expert Alteration Expert
+          .profile-card
+            .profile-top
+              .profile-left
+                if profileUser.profile_image
+                  img.profile-avatar-image(src=profileUser.profile_image alt=profileUser.username)
                 else
-                  span.role-pill.community Community User
+                  .profile-avatar
+                    = profileUser.username ? profileUser.username.charAt(0).toUpperCase() : "U"
 
-              .profile-meta
-                .meta-item
-                  span.meta-label Member Since
-                  span.meta-value= profileUser.member_since || "N/A"
-
-                .meta-item
-                  span.meta-label Rating
-                  span.meta-value ⭐ #{safeRating}
-
-                .meta-item
-                  span.meta-label Total Listings
-                  span.meta-value= totalListings
-
-                .meta-item
-                  span.meta-label Completed
-                  span.meta-value= completedListings
-
-              .profile-actions
                 if isOwnProfile
-                  a.btn.btn-primary(href="/items/new") + Add Item
-                  a.btn.btn-outline(href="/") Back Home
-                else if currentUser
-                  a.btn.btn-primary(href="/") Back Home
-                else
-                  a.btn.btn-outline(href="/login") Login to interact
+                  a.btn.btn-outline(href="/profile/edit") Edit Profile
 
-        .profile-main-grid
-          aside.profile-sidebar
-            .info-card
-              h3.card-heading User Statistics
-              .stat-list
-                .stat-row
-                  span.stat-label Available Listings
-                  span.stat-value= availableListings
-                .stat-row
-                  span.stat-label Completed Exchanges
-                  span.stat-value= completedListings
-                .stat-row
-                  span.stat-label Positive Rating
-                  span.stat-value #{safeRating} / 5
-                .stat-row
-                  span.stat-label Member Since
-                  span.stat-value= profileUser.member_since || "N/A"
+              .profile-right
+                h1.profile-name= profileUser.username
+                p.profile-location= profileUser.location || "Unknown location"
 
-            .info-card
-              h3.card-heading Quick Info
-              ul.info-list
-                li
-                  strong Full Name:
-                  |  #{profileUser.full_name || "Not provided"}
-                li
-                  strong Email:
-                  |  #{profileUser.email || "Not provided"}
-                li
-                  strong Phone:
-                  |  #{profileUser.phone || "Not provided"}
-                li
-                  strong Role:
-                  |  #{profileUser.role || "community"}
+                .profile-role-badge
+                  if profileUser.role === "expert"
+                    span.role-pill.expert Alteration Expert
+                  else
+                    span.role-pill.community Community User
 
-            if currentUser && !isOwnProfile
+                .profile-meta
+                  .meta-item
+                    span.meta-label Member Since
+                    span.meta-value= profileUser.member_since || "N/A"
+
+                  .meta-item
+                    span.meta-label Rating
+                    span.meta-value ⭐ #{safeRating}
+
+                  .meta-item
+                    span.meta-label Total Listings
+                    span.meta-value= totalListings
+
+                  .meta-item
+                    span.meta-label Completed
+                    span.meta-value= completedListings
+
+                .profile-actions
+                  if isOwnProfile
+                    a.btn.btn-primary(href="/items/new") + Add Item
+                    a.btn.btn-outline(href="/") Back Home
+                  else if currentUser
+                    a.btn.btn-primary(href="/") Back Home
+                  else
+                    a.btn.btn-outline(href="/login") Login to interact
+
+          .profile-main-grid
+            aside.profile-sidebar
               .info-card
-                h3.card-heading Rate This User
-                form.rating-form(action='/users/' + profileUser.id + '/rate' method='POST')
-                  label(for='rating') Select rating
-                  select(name='rating' id='rating' required)
-                    option(value='') Choose rating
-                    option(value='1') 1 Star
-                    option(value='2') 2 Stars
-                    option(value='3') 3 Stars
-                    option(value='4') 4 Stars
-                    option(value='5') 5 Stars
-                  button.btn.btn-primary(type='submit') Submit Rating
+                h3.card-heading User Statistics
+                .stat-list
+                  .stat-row
+                    span.stat-label Available Listings
+                    span.stat-value= availableListings
+                  .stat-row
+                    span.stat-label Completed Exchanges
+                    span.stat-value= completedListings
+                  .stat-row
+                    span.stat-label Positive Rating
+                    span.stat-value #{safeRating} / 5
+                  .stat-row
+                    span.stat-label Member Since
+                    span.stat-value= profileUser.member_since || "N/A"
 
-          main.profile-content
-            .content-card
-              h2.section-title About
-              p.about-text= profileUser.bio || "This user has not added a bio yet."
+              .info-card
+                h3.card-heading Quick Info
+                ul.info-list
+                  li
+                    strong Full Name:
+                    |  #{profileUser.full_name || "Not provided"}
+                  li
+                    strong Email:
+                    |  #{profileUser.email || "Not provided"}
+                  li
+                    strong Phone:
+                    |  #{profileUser.phone || "Not provided"}
+                  li
+                    strong Role:
+                    |  #{profileUser.role || "community"}
 
-            .content-card
-              h2.section-title User Listings
+              if currentUser && !isOwnProfile
+                .info-card
+                  h3.card-heading Rate This User
+                  form.rating-form(action='/users/' + profileUser.id + '/rate' method='POST')
+                    label(for='rating') Select rating
+                    select(name='rating' id='rating' required)
+                      option(value='') Choose rating
+                      option(value='1') 1 Star
+                      option(value='2') 2 Stars
+                      option(value='3') 3 Stars
+                      option(value='4') 4 Stars
+                      option(value='5') 5 Stars
+                    button.btn.btn-primary(type='submit') Submit Rating
 
-              if items && items.length
-                .listing-grid
-                  each item in items
-                    .listing-card
-                      if item.image_url
-                        img.listing-image-real(src=item.image_url alt=item.title)
-                      else
-                        .listing-image
-                          span= item.title ? item.title.charAt(0).toUpperCase() : "I"
+            section.profile-content
+              .content-card
+                h2.section-title About
+                p.about-text= profileUser.bio || "This user has not added a bio yet."
 
-                      .listing-details
-                        h3.listing-title= item.title || "Untitled Item"
-                        p.listing-category Category: #{item.category_name || "Uncategorised"}
-                        p.listing-status Status: #{item.status || item.availability_status || "Available"}
+              .content-card
+                h2.section-title User Listings
 
-                        if item.description
-                          p.listing-description= item.description.length > 90 ? item.description.substring(0, 90) + "..." : item.description
+                if items && items.length
+                  .listing-grid
+                    each item in items
+                      .listing-card
+                        if item.image_url
+                          img.listing-image-real(src=item.image_url alt=item.title)
                         else
-                          p.listing-description No description added.
+                          .listing-image
+                            span= item.title ? item.title.charAt(0).toUpperCase() : "I"
 
-                        a.btn.btn-outline(href='/items/' + item.id) View Details
-              else
-                .empty-box
-                  p No items listed yet.
+                        .listing-details
+                          h3.listing-title= item.title || "Untitled Item"
+                          p.listing-category Category: #{item.category_name || "Uncategorised"}
+                          p.listing-status Status: #{item.availability_status || "Available"}
+
+                          if item.description
+                            p.listing-description= item.description.length > 90 ? item.description.substring(0, 90) + "..." : item.description
+                          else
+                            p.listing-description No description added.
+
+                          a.btn.btn-outline(href='/items/' + item.id) View Details
+                else
+                  .empty-box
+                    p No items listed yet.
 
     include partials/footer.pug
