@@ -967,5 +967,52 @@ app.get("/items/:id", async (req, res) => {
     res.status(500).send("Database error");
   }
 });
+// DELETE ITEM
+app.post("/items/:id/delete", requireLogin, async (req, res) => {
+  const itemId = req.params.id;
+  const currentUserId = req.session.user.id;
 
+  try {
+    // Check if item exists
+    const itemRows = await db.query(
+      "SELECT * FROM items WHERE id = ?",
+      [itemId]
+    );
+
+    if (itemRows.length === 0) {
+      return res.status(404).send("Item not found");
+    }
+
+    const item = itemRows[0];
+
+    // Allow only the item owner
+    if (item.user_id !== currentUserId) {
+      return res.status(403).send("You are not allowed to delete this item");
+    }
+
+    // Delete related item tags first
+    await db.query(
+      "DELETE FROM item_tags WHERE item_id = ?",
+      [itemId]
+    );
+
+    // Delete related requests first
+    await db.query(
+      "DELETE FROM requests WHERE item_id = ?",
+      [itemId]
+    );
+
+    // Now delete the item
+    await db.query(
+      "DELETE FROM items WHERE id = ?",
+      [itemId]
+    );
+
+    // Redirect back to the user's profile
+    res.redirect(`/users/${currentUserId}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error deleting item");
+  }
+});
 module.exports = app;

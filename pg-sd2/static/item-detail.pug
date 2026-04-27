@@ -76,6 +76,13 @@ html(lang="en")
                     h2.section-title Item Unavailable
                     p.request-card-text This item has already been approved for another request.
 
+              if currentUser && currentUser.id === item.user_id
+                .request-card
+                  h2.section-title Manage Item
+                  p.request-card-text You are the owner of this item.
+                  form(action=`/items/${item.id}/delete` method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');")
+                    button.btn.btn-outline(type="submit") Delete Item
+
     if item.image_url
       .image-modal#imageModal
         button.image-modal-close#closeImageModal(type="button") ×
